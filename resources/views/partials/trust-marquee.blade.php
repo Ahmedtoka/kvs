@@ -18,7 +18,7 @@
                 @foreach ([0, 1] as $half)
                 <div class="marquee-half flex items-center" @if ($half === 1) aria-hidden="true" @endif>
                     @foreach ($accLogos as $logo)
-                    <div class="mx-4 sm:mx-5 flex items-center justify-center h-16 sm:h-20 w-32 sm:w-40 shrink-0 bg-ivory rounded-sm p-2.5 shadow-sm">
+                    <div class="mx-6 sm:mx-8 flex items-center justify-center h-16 sm:h-20 w-36 sm:w-44 shrink-0 bg-ivory rounded-sm p-4 sm:p-5 shadow-sm">
                         <img src="{{ $logo }}" alt="{{ $half === 0 ? 'Accreditation partner' : '' }}"
                              class="max-h-full max-w-full object-contain"
                              loading="lazy" height="80">

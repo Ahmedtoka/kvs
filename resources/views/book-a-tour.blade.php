@@ -41,26 +41,31 @@
         </div>
 
         <div class="lg:col-span-3 reveal">
-            <form class="bg-white border border-beige-200 rounded-sm shadow-xl p-7 sm:p-10" method="POST" action="#">
+            <form class="bg-white border border-beige-200 rounded-sm shadow-xl p-7 sm:p-10" method="POST" action="{{ route('leads.store') }}">
+                @csrf
+                <input type="hidden" name="type" value="tour">
+                <div class="hidden" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                 <h2 class="font-display text-2xl font-semibold text-maroon-900">Reserve Your Tour</h2>
                 <p class="mt-1.5 text-sm text-charcoal-600">We confirm every tour by phone within 24 hours.</p>
+
+                <div class="mt-5">@include('partials.form-status')</div>
 
                 <div class="mt-8 grid sm:grid-cols-2 gap-5">
                     <div>
                         <label for="t_parent" class="block text-sm font-medium mb-1.5">Parent's Full Name <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="text" id="t_parent" name="parent_name" required autocomplete="name" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="text" id="t_parent" name="parent_name" value="{{ old('parent_name') }}" required autocomplete="name" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div>
                         <label for="t_phone" class="block text-sm font-medium mb-1.5">Mobile Number <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="tel" id="t_phone" name="phone" required autocomplete="tel" inputmode="tel" placeholder="01XXXXXXXXX" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="tel" id="t_phone" name="phone" value="{{ old('phone') }}" required autocomplete="tel" inputmode="tel" placeholder="01XXXXXXXXX" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div>
                         <label for="t_student" class="block text-sm font-medium mb-1.5">Student's Name <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="text" id="t_student" name="student_name" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="text" id="t_student" name="student_name" value="{{ old('student_name') }}" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div>
                         <label for="t_email" class="block text-sm font-medium mb-1.5">Email</label>
-                        <input type="email" id="t_email" name="email" autocomplete="email" inputmode="email" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="email" id="t_email" name="email" value="{{ old('email') }}" autocomplete="email" inputmode="email" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div>
                         <label for="t_year" class="block text-sm font-medium mb-1.5">Applying for Year Group <span class="text-maroon-600" aria-hidden="true">*</span></label>
@@ -73,7 +78,7 @@
                     </div>
                     <div>
                         <label for="t_date" class="block text-sm font-medium mb-1.5">Preferred Tour Date <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="date" id="t_date" name="preferred_date" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="date" id="t_date" name="preferred_date" value="{{ old('preferred_date') }}" min="{{ date('Y-m-d') }}" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="t_notes" class="block text-sm font-medium mb-1.5">Anything we should know? <span class="text-charcoal-600/60 font-normal">(optional)</span></label>

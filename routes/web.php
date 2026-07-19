@@ -1,6 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CareerAdminController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LeadAdminController;
+use App\Http\Controllers\LeadController;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Public website
+|--------------------------------------------------------------------------
+*/
 
 Route::view('/', 'home')->name('home');
 
@@ -28,3 +39,37 @@ Route::view('/services', 'services')->name('services');
 // Contact
 Route::view('/contact', 'contact')->name('contact');
 Route::view('/careers', 'careers')->name('careers');
+
+// Public form submissions (rate-limited)
+Route::middleware('throttle:15,1')->group(function () {
+    Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
+    Route::post('/careers/apply', [LeadController::class, 'storeCareer'])->name('careers.store');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Admin panel
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/admin/login', [AuthController::class, 'login'])->middleware('throttle:10,1')->name('admin.login.attempt');
+
+Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/leads', [LeadAdminController::class, 'index'])->name('leads.index');
+    Route::get('/leads/export', [LeadAdminController::class, 'export'])->name('leads.export');
+    Route::patch('/leads/{lead}', [LeadAdminController::class, 'update'])->name('leads.update');
+    Route::delete('/leads/{lead}', [LeadAdminController::class, 'destroy'])->name('leads.destroy');
+
+    Route::get('/careers', [CareerAdminController::class, 'index'])->name('careers.index');
+    Route::get('/careers/{application}/cv', [CareerAdminController::class, 'download'])->name('careers.download');
+    Route::patch('/careers/{application}', [CareerAdminController::class, 'update'])->name('careers.update');
+    Route::delete('/careers/{application}', [CareerAdminController::class, 'destroy'])->name('careers.destroy');
+
+    Route::get('/password', [AuthController::class, 'showPassword'])->name('password.edit');
+    Route::patch('/password', [AuthController::class, 'updatePassword'])->name('password.update');
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
