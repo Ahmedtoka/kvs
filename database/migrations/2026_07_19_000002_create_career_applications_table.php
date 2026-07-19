@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('career_applications')) {
+            return; // table already created by a previous partial run
+        }
+
         Schema::create('career_applications', function (Blueprint $table) {
             $table->id();
             $table->string('name');

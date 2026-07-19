@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('leads')) {
+            return; // table already created by a previous partial run
+        }
+
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
             $table->string('type', 20)->default('callback');   // callback | tour | fees
