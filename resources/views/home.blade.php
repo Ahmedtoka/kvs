@@ -238,10 +238,10 @@
             @php
                 $advantages = [
                     ['title' => 'Top-Tier British Curriculum', 'desc' => 'Accredited pathways through Cambridge, Pearson Edexcel and Oxford International AQA — from Early Years to IGCSE.'],
-                    ['title' => 'Three Languages, Officially Certified', 'desc' => 'English-medium education plus German with Goethe-Institut and French with Institut Français d\'Égypte.'],
-                    ['title' => 'Character Before Everything', 'desc' => '"A Valley of Character-Building" — integrity, respect and responsibility shape every classroom and corridor.'],
-                    ['title' => 'A Global Outlook', 'desc' => 'UN Global Schools Program member — students engage with the world\'s 17 Global Goals from their first year.'],
+                    ['title' => 'French Language Excellence', 'desc' => 'In partnership with the Institut Français d\'Égypte, our French programme provides high-quality language education that develops fluency, cultural awareness, and effective communication. Students gain internationally recognised language skills while building a strong foundation for future academic and global opportunities.'],
+                    ['title' => 'German Language Excellence', 'desc' => 'In partnership with the Goethe-Institut, our German programme provides internationally recognised language learning that develops confidence, cultural awareness, and communication skills. Students are prepared for globally recognised Goethe examinations while building a strong foundation for future academic and professional opportunities.'],
                     ['title' => 'A Smart, Cashless Campus', 'desc' => 'SPARE and Kashier systems let parents handle fees, uniforms, canteen and transport digitally — with full peace of mind.'],
+                    ['title' => 'Our House System', 'desc' => 'Every student is welcomed into one of our four houses — Resilience, Wisdom, Innovation, and Compassion — each representing the core values of Knowledge Valley School. Through friendly competitions, leadership opportunities, community service, and collaborative activities, our House System fosters teamwork, confidence, school spirit, and a strong sense of belonging.'],
                     ['title' => 'A Vibrant School Life', 'desc' => 'Science fairs, book fairs, chess academy, art exhibitions, charity initiatives and performances all year round.'],
                 ];
             @endphp
