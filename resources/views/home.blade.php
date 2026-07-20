@@ -28,14 +28,21 @@
     </div>
 
     <div class="relative container-site py-24 sm:py-32 lg:py-40 text-center">
-        <p class="eyebrow !text-gold-400 mb-5">A British International School · Giza, Egypt · Since 2008</p>
+        <div class="flex flex-col items-center gap-4 mb-6">
+            <span class="inline-flex items-center gap-2.5 rounded-full border border-gold-500/40 bg-gold-500/10 px-6 py-2.5 text-[13px] sm:text-sm font-semibold tracking-[0.18em] uppercase text-gold-300">
+                <svg class="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
+                Since 2008 · 18 Years of Excellence
+            </span>
+            <p class="eyebrow !text-gold-400">A British International School</p>
+        </div>
         <h1 class="font-display font-bold text-4xl sm:text-5xl lg:text-[64px] leading-[1.12] max-w-4xl mx-auto">
             Rooted in Tradition.<br>
             <span class="text-gold-400 italic">Inspired by the Future.</span>
         </h1>
         <p class="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-ivory/80 leading-relaxed">
-            Knowledge Valley is a top-tier British curriculum school where academic excellence meets
-            character-building — preparing confident, responsible and future-ready learners from Early Years to IGCSE.
+            Knowledge Valley International School is a leading British international school delivering the Cambridge
+            curriculum from Early Years to IGCSE. We combine academic excellence, character development, innovation,
+            and global perspectives to prepare confident, compassionate, and future-ready learners.
         </p>
         <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#book-tour" class="btn-gold w-full sm:w-auto">
@@ -100,7 +107,7 @@
         </div>
         <div class="reveal">
             <p class="font-display text-4xl sm:text-5xl font-bold text-gold-400"><span data-counter="17">0</span></p>
-            <p class="mt-2 text-sm tracking-wide text-ivory/75">UN Global Goals in Our Curriculum</p>
+            <p class="mt-2 text-sm tracking-wide text-ivory/75">Sustainable Development Goals</p>
         </div>
     </div>
 </section>

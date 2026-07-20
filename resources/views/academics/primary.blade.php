@@ -18,8 +18,8 @@
     'img' => 'stage-primary',
     'headline' => 'Strong Foundations, Built Properly',
     'intro' => [
-        'Primary at KVS follows the National Curriculum of England through Key Stages 1 and 2. English, Mathematics and Science are taught with depth and rigour, while the Cambridge Learner Attributes shape how children think — not just what they know.',
-        'This is also where our language advantage begins: German with the Goethe-Institut and French with the Institut Français join the timetable, alongside Arabic studies, ICT, arts and PE.',
+        'Our Primary programme empowers pupils to become confident, curious, and independent learners. Through a broad and engaging curriculum, we inspire academic excellence, critical thinking, creativity, and collaboration while nurturing strong values, resilience, and a sense of responsibility. We prepare every child with the knowledge, skills, and character needed to thrive in an ever-changing world.',
+        'Following the National Curriculum of England through Key Stages 1 and 2, this is also where our language advantage begins: German with the Goethe-Institut and French with the Institut Français join the timetable, alongside Arabic studies, ICT, arts and PE.',
     ],
     'subjects_title' => 'The Primary Curriculum',
     'subjects' => [

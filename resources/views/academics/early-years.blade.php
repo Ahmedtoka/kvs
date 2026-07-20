@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Early Years (FS1–FS2) — Knowledge Valley International School')
-@section('meta_description', 'Early Years at KVS: the British EYFS framework for ages 3–5 — a warm, nurturing start where curiosity, confidence and a love of learning take root.')
+@section('meta_description', 'Early Years at KVS: a joyful, nurturing and inspiring start on the British EYFS framework for ages 3–5, building curiosity, confidence and a lifelong love of learning.')
 
 @section('content')
 
@@ -18,8 +18,8 @@
     'img' => 'stage-early',
     'headline' => 'Where the Love of Learning Begins',
     'intro' => [
-        'The first years of school shape how a child feels about learning for the rest of their life. Our Early Years follow the British EYFS (Early Years Foundation Stage) framework — learning through play, exploration and gentle structure, in classrooms designed to feel safe, warm and exciting.',
-        'Small groups, nurturing teachers and daily communication with parents mean your child is known, seen and supported from day one.',
+        'Our Early Years programme provides a joyful, nurturing, and inspiring start to every child\'s educational journey. Through play-based learning, exploration, and meaningful experiences, we foster curiosity, creativity, confidence, and independence while building strong foundations in communication, literacy, numeracy, and personal development. In a safe and caring environment, every child is encouraged to discover their unique potential and develop a lifelong love of learning.',
+        'Delivered through the British EYFS (Early Years Foundation Stage) framework in small groups, with nurturing teachers and daily communication with parents — so your child is known, seen and supported from day one.',
     ],
     'subjects_title' => 'The Seven Areas of EYFS Learning',
     'subjects' => [

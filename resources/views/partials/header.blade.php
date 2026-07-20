@@ -30,7 +30,7 @@
 <header id="site-header" class="sticky top-0 z-50 bg-ivory/95 backdrop-blur border-b border-beige-200 transition-shadow duration-200">
     <div class="container-site flex items-center justify-between py-3">
         <a href="/" class="flex items-center gap-3" aria-label="Knowledge Valley International School — Home">
-            <img src="/images/logo-mark.png" alt="" width="52" height="45" class="h-11 w-auto">
+            <img src="/images/logo-mark.png" alt="" width="74" height="64" class="h-14 sm:h-16 w-auto">
             <span class="leading-tight">
                 <span class="block font-display font-bold text-lg sm:text-xl text-maroon-900">Knowledge Valley</span>
                 <span class="block text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-gold-700">International School</span>

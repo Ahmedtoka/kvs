@@ -92,8 +92,8 @@
             <h2 class="heading-serif text-3xl sm:text-4xl mt-3 gold-rule-left">The KVS Learner</h2>
             <p class="mt-6 text-charcoal-600 leading-[1.75]">
                 Academic results matter — and ours speak through the universities our graduates reach. But the KVS
-                education model, built on four pillars from the Cambridge Learner Attributes to the UN Global Goals,
-                measures success by who our students become:
+                education model — spanning academic excellence, character development, global citizenship and
+                innovation — measures success by who our students become:
             </p>
             <div class="mt-8 flex flex-wrap gap-3">
                 @foreach (['Confident', 'Responsible', 'Innovative', 'Reflective', 'Engaged'] as $attr)
