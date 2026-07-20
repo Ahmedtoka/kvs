@@ -24,9 +24,9 @@
             @php
                 $stages = [
                     ['img' => 'stage-early', 'chip' => 'FS1 – FS2 · Ages 3–5', 'title' => 'Early Years', 'href' => '/academics/early-years',
-                     'desc' => 'The British EYFS framework — learning through play, phonics, early numeracy, and the social confidence that sets the tone for everything after.'],
+                     'desc' => 'Our Early Years programme provides a joyful, nurturing, and inspiring start to every child\'s educational journey. Through play-based learning, exploration, and meaningful experiences, we foster curiosity, creativity, confidence, and independence while building strong foundations in communication, literacy, numeracy, and personal development. In a safe and caring environment, every child is encouraged to discover their unique potential and develop a lifelong love of learning.'],
                     ['img' => 'stage-primary', 'chip' => 'Years 1 – 6 · Ages 5–11', 'title' => 'Primary', 'href' => '/academics/primary',
-                     'desc' => 'English, Maths and Science built on the National Curriculum of England, enriched by German, French, arts, PE and the Cambridge Learner Attributes.'],
+                     'desc' => 'Our Primary programme empowers pupils to become confident, curious, and independent learners. Through a broad and engaging curriculum, we inspire academic excellence, critical thinking, creativity, and collaboration while nurturing strong values, resilience, and a sense of responsibility. We prepare every child with the knowledge, skills, and character needed to thrive in an ever-changing world.'],
                     ['img' => 'stage-secondary', 'chip' => 'Years 7+ · IGCSE Pathway', 'title' => 'Secondary & IGCSE', 'href' => '/academics/secondary',
                      'desc' => 'Key Stage 3 foundations leading to IGCSE examinations with Cambridge, Pearson Edexcel and Oxford International AQA.'],
                 ];

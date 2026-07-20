@@ -15,14 +15,15 @@
 <section class="py-20 sm:py-24 bg-ivory">
     <div class="container-site space-y-16">
         @php
-            /* NOTE: replace the placeholder message texts with the real messages from the current website / administration */
+            /* Each member's photo file lives in public/images/a ward from our leader/.
+               Set 'photo' to the exact filename; leave null to show the placeholder. */
             $leaders = [
-                ['name' => 'Mr. Mohamed Farghaly', 'role' => 'School Board', 'img' => 'leadership',
+                ['name' => 'Mr. Mohamed Farghaly', 'role' => 'School Board', 'photo' => 'IMG_0456.JPG.jpeg',
                  'message' => 'It is my pleasure to welcome you to Knowledge Valley International School. Since our founding, we have been committed to one promise: an education that nurtures academic excellence and builds strong character in equal measure. I invite you to visit our campus and see that promise in action. [نص الرسالة الفعلي يُستبدل هنا]'],
-                ['name' => 'Dr. Heba Elshaer', 'role' => 'School Board', 'img' => 'leadership',
+                ['name' => 'Dr. Heba Elshaer', 'role' => 'School Board', 'photo' => 'tttt1.jpg.jpeg',
                  'message' => 'At KVS, we believe every child carries unique potential. Our role is to provide the environment, the guidance and the opportunities for that potential to flourish — academically, socially and personally. [نص الرسالة الفعلي يُستبدل هنا]'],
-                ['name' => 'Ms. Elham Mahmoud', 'role' => 'School Board', 'img' => 'leadership',
-                 'message' => 'Education is a partnership between school and family. We are proud of the warm, collaborative community we have built with our parents — and we welcome you to become part of it. [نص الرسالة الفعلي يُستبدل هنا]'],
+                ['name' => 'Ms. Elham Mahmoud', 'role' => 'School Board', 'photo' => 'Ahlam.jpg',
+                 'message' => 'Welcome to our KVS family. Every new chapter brings a little uncertainty and a great deal of energy, and it is an honour to join a community known for its warmth and care. We hold a strong focus on academic excellence within a safe and inspiring environment, while encouraging every student to grow through activities both inside and outside the classroom. I believe every child is capable of reaching their full potential, and we work hand in hand with parents to make that happen. Communication is the key to every strong partnership, so please always feel free to share your ideas with us. Our children are our priority, and together, in line with British academic standards, we will prepare them to live happily, independently, and ready for the world ahead.'],
             ];
         @endphp
         @foreach ($leaders as $i => $leader)
@@ -30,7 +31,7 @@
             <div class="lg:col-span-2 [direction:ltr]">
                 <div class="relative max-w-xs mx-auto">
                     <div class="absolute -top-3 {{ $i % 2 ? '-right-3' : '-left-3' }} w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-                    <img src="{{ $leaderImgs[$i] ?? '/images/placeholders/'.$leader['img'].'.svg' }}" alt="{{ $leader['name'] }}" class="relative w-full aspect-[4/5] object-cover rounded-sm shadow-xl" width="800" height="1000" loading="lazy">
+                    <img src="{{ (!empty($leader['photo']) ? kvs_file('a ward from our leader/'.$leader['photo']) : null) ?? '/images/placeholders/leadership.svg' }}" alt="{{ $leader['name'] }}" class="relative w-full aspect-[4/5] object-cover rounded-sm shadow-xl" width="800" height="1000" loading="lazy">
                 </div>
             </div>
             <div class="lg:col-span-3 [direction:ltr]">
