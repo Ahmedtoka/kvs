@@ -127,8 +127,11 @@
                     <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">FS1 – FS2 · Ages 3–5</span>
                     <h3 class="font-display text-2xl font-semibold text-maroon-900 mt-4">Early Years</h3>
                     <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">
-                        A warm, nurturing start built on the EYFS framework — where curiosity, confidence and a love
-                        of learning take root.
+                        Our Early Years programme provides a joyful, nurturing, and inspiring start to every child's
+                        educational journey. Through play-based learning, exploration, and meaningful experiences, we
+                        foster curiosity, creativity, confidence, and independence while building strong foundations in
+                        communication, literacy, numeracy, and personal development. In a safe and caring environment,
+                        every child is encouraged to discover their unique potential and develop a lifelong love of learning.
                     </p>
                     <a href="/academics/early-years" class="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-maroon-800 hover:text-maroon-600 transition-colors">
                         Explore Early Years
@@ -146,8 +149,11 @@
                     <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">Years 1 – 6 · Ages 5–11</span>
                     <h3 class="font-display text-2xl font-semibold text-maroon-900 mt-4">Primary</h3>
                     <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">
-                        Strong academic foundations in English, Maths and Science — enriched by languages, arts,
-                        and the Cambridge Learner Attributes.
+                        Our Primary programme empowers pupils to become confident, curious, and independent learners.
+                        Through a broad and engaging curriculum, we inspire academic excellence, critical thinking,
+                        creativity, and collaboration while nurturing strong values, resilience, and a sense of
+                        responsibility. We prepare every child with the knowledge, skills, and character needed to thrive
+                        in an ever-changing world.
                     </p>
                     <a href="/academics/primary" class="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-maroon-800 hover:text-maroon-600 transition-colors">
                         Explore Primary
