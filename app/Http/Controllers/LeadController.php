@@ -20,7 +20,7 @@ class LeadController extends Controller
 
         $rules = [
             'parent_name' => ['required', 'string', 'max:120'],
-            'phone'       => ['required', 'string', 'max:30', 'regex:/^[0-9+\s\-()]{7,}$/'],
+            'phone'       => ['required', 'string', 'regex:/^01[0-9]{9}$/'],
             'email'       => ['nullable', 'email', 'max:190'],
             'child_age'   => ['nullable', 'string', 'max:10'],
             'stage'       => ['nullable', 'string', 'max:30'],
@@ -36,7 +36,7 @@ class LeadController extends Controller
             $rules['preferred_date'][0] = 'required';
         }
 
-        $data = $request->validate($rules);
+        $data = $request->validate($rules, ['phone.regex' => 'Please enter a valid 11-digit mobile number, e.g. 01012345678.']);
 
         Lead::create([
             'type'           => $type,
@@ -64,11 +64,11 @@ class LeadController extends Controller
 
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:120'],
-            'phone'    => ['required', 'string', 'max:30'],
+            'phone'    => ['required', 'string', 'regex:/^01[0-9]{9}$/'],
             'email'    => ['required', 'email', 'max:190'],
             'position' => ['required', 'string', 'max:120'],
             'cv'       => ['required', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
-        ]);
+        ], ['phone.regex' => 'Please enter a valid 11-digit mobile number, e.g. 01012345678.']);
 
         $cvPath = null;
         if ($request->hasFile('cv')) {

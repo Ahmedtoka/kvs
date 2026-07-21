@@ -57,7 +57,7 @@
                     </div>
                     <div>
                         <label for="t_phone" class="block text-sm font-medium mb-1.5">Mobile Number <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="tel" id="t_phone" name="phone" value="{{ old('phone') }}" required autocomplete="tel" inputmode="tel" placeholder="01XXXXXXXXX" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="tel" id="t_phone" name="phone" value="{{ old('phone') }}" required autocomplete="tel" inputmode="numeric" maxlength="11" pattern="01[0-9]{9}" title="Please enter an 11-digit mobile number starting with 01" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" placeholder="01XXXXXXXXX" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div>
                         <label for="t_student" class="block text-sm font-medium mb-1.5">Student's Name <span class="text-maroon-600" aria-hidden="true">*</span></label>

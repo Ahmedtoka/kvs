@@ -53,7 +53,7 @@
                     </div>
                     <div>
                         <label for="f_phone" class="block text-sm font-medium mb-1.5">Mobile Number <span class="text-gold-400" aria-hidden="true">*</span></label>
-                        <input type="tel" id="f_phone" name="phone" value="{{ old('phone') }}" required autocomplete="tel" inputmode="tel" placeholder="01XXXXXXXXX" class="w-full h-12 px-4 rounded-sm border border-maroon-700 bg-maroon-900 text-ivory placeholder:text-ivory/40 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="tel" id="f_phone" name="phone" value="{{ old('phone') }}" required autocomplete="tel" inputmode="numeric" maxlength="11" pattern="01[0-9]{9}" title="Please enter an 11-digit mobile number starting with 01" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" placeholder="01XXXXXXXXX" class="w-full h-12 px-4 rounded-sm border border-maroon-700 bg-maroon-900 text-ivory placeholder:text-ivory/40 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div>
                         <label for="f_stage" class="block text-sm font-medium mb-1.5">Stage of Interest <span class="text-gold-400" aria-hidden="true">*</span></label>

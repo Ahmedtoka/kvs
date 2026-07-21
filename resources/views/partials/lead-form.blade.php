@@ -19,7 +19,7 @@
         </div>
         <div>
             <label for="phone" class="block text-sm font-medium mb-1.5">Mobile Number <span class="text-maroon-600" aria-hidden="true">*</span></label>
-            <input type="tel" id="phone" name="phone" required autocomplete="tel" inputmode="tel" placeholder="01XXXXXXXXX" value="{{ old('phone') }}"
+            <input type="tel" id="phone" name="phone" required autocomplete="tel" inputmode="numeric" maxlength="11" pattern="01[0-9]{9}" title="Please enter an 11-digit mobile number starting with 01" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,11)" placeholder="01XXXXXXXXX" value="{{ old('phone') }}"
                    class="w-full h-12 px-4 rounded-sm border @error('phone') border-red-500 @else border-beige-300 @enderror bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
             @error('phone')<p class="mt-1.5 text-sm text-red-600">{{ $message }}</p>@enderror
         </div>
