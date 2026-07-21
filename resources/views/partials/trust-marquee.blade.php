@@ -1,9 +1,6 @@
-{{-- Accreditations marquee — auto-detects logos in public/images/accreditations/ (falls back to public/images/lOGOS/) --}}
+{{-- Accreditations marquee — partner & accreditation logos in public/img/ --}}
 @php
-    $accLogos = function_exists('kvs_images') ? kvs_images('accreditations') : [];
-    if (!count($accLogos) && function_exists('kvs_images')) {
-        $accLogos = kvs_images('lOGOS');
-    }
+    $accLogos = ['/img/partner-1.jpg','/img/partner-2.jpg','/img/partner-3.jpg','/img/partner-4.jpg','/img/partner-5.jpg','/img/partner-6.jpg','/img/partner-7.jpg'];
     $accNames = ['University of Cambridge', 'Pearson Edexcel', 'Oxford International AQA', 'British Council', 'Goethe-Institut', 'Institut Français'];
 @endphp
 

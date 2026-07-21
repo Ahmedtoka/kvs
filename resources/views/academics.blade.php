@@ -4,7 +4,7 @@
 @section('meta_description', 'Explore the KVS academic journey: EYFS Early Years, British Primary, and Secondary through to IGCSE with Cambridge, Pearson Edexcel and Oxford International AQA.')
 
 @section('content')
-@php $stageImgs = array_merge(kvs_images("Find Your Child's Place at KVS"), kvs_images('find your child place')); @endphp
+@php $stageImgs = ['/img/stage-early-years.jpg', '/img/stage-primary.jpg', '/img/stage-secondary.jpg']; @endphp
 
 @include('partials.page-hero', [
     'title' => 'The British Curriculum at KVS',
@@ -34,7 +34,7 @@
             @foreach ($stages as $stage)
             <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200">
                 <div class="overflow-hidden">
-                    <img src="{{ $stageImgs[$loop->index] ?? '/images/placeholders/'.$stage['img'].'.svg' }}" alt="{{ $stage['title'] }} at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
+                    <img src="{{ $stageImgs[$loop->index] ?? '/img/'.$stage['img'].'.svg' }}" alt="{{ $stage['title'] }} at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
                 </div>
                 <div class="p-7">
                     <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">{{ $stage['chip'] }}</span>
@@ -54,7 +54,7 @@
 {{-- Languages --}}
 <section class="py-20 sm:py-24 bg-maroon-950 text-ivory relative overflow-hidden">
     <div class="absolute -left-32 -bottom-32 w-[30rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="relative container-site">
         <div class="text-center max-w-2xl mx-auto reveal">
@@ -107,7 +107,7 @@
         </div>
         <div class="reveal relative">
             <div class="absolute -top-4 -left-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-            <img src="{{ $stageImgs[1] ?? '/images/placeholders/stage-primary.svg' }}" alt="KVS students in class" class="relative w-full rounded-sm shadow-xl" width="1600" height="1000" loading="lazy">
+            <img src="{{ $stageImgs[1] ?? '/img/stage-primary.svg' }}" alt="KVS students in class" class="relative w-full rounded-sm shadow-xl" width="1600" height="1000" loading="lazy">
         </div>
     </div>
 </section>

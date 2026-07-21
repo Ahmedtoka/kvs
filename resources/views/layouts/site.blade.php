@@ -7,7 +7,7 @@
     <meta name="description" content="@yield('description', 'KVS is a top-tier British curriculum international school in Giza, Egypt — accredited by Cambridge, Pearson Edexcel, Oxford AQA and the British Council. Book your school tour today.')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" type="image/png" href="/images/logo-mark.png">
+    <link rel="icon" type="image/png" href="/img/logo-mark.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @if (config('services.ga4.measurement_id'))

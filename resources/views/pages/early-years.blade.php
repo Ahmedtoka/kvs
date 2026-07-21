@@ -9,7 +9,7 @@
     'title'    => 'Early Years',
     'lead'     => 'A warm, nurturing start built on the British EYFS framework — where curiosity, confidence and a love of learning take root.',
     'badge'    => 'FS1 – FS2 · Ages 3–5',
-    'image'    => '/images/placeholders/stage-early.svg',
+    'image'    => '/img/stage-early.svg',
     'overview' => [
         'Our Early Years follows the British Early Years Foundation Stage (EYFS) framework, built around learning through purposeful play. Classrooms are language-rich, hands-on environments where children explore, question and create every day.',
         'Small class sizes and dedicated assistants mean every child is known and nurtured. By the end of FS2, our children are confident communicators, early readers, and joyful learners ready for Year 1.',

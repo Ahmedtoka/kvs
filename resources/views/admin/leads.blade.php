@@ -14,7 +14,7 @@
 <header class="bg-maroon-950 text-ivory">
     <div class="container-site flex items-center justify-between py-3.5">
         <div class="flex items-center gap-3">
-            <img src="/images/logo-mark.png" alt="" class="h-10 w-auto">
+            <img src="/img/logo-mark.png" alt="" class="h-10 w-auto">
             <span class="leading-tight">
                 <span class="block font-display font-bold text-lg">KVS Admin</span>
                 <span class="block text-[11px] tracking-[0.2em] uppercase text-gold-400">Admissions Leads</span>

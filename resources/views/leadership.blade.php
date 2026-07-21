@@ -4,7 +4,6 @@
 @section('meta_description', 'Messages from the Knowledge Valley International School board and leadership team.')
 
 @section('content')
-@php $leaderImgs = kvs_images('a ward from our leader'); @endphp
 
 @include('partials.page-hero', [
     'title' => 'Leadership Messages',
@@ -15,15 +14,13 @@
 <section class="py-20 sm:py-24 bg-ivory">
     <div class="container-site space-y-16">
         @php
-            /* Each member's photo file lives in public/images/a ward from our leader/.
-               Set 'photo' to the exact filename; leave null to show the placeholder. */
             $leaders = [
-                ['name' => 'Mr. Mohamed Farghaly', 'role' => 'School Board', 'photo' => 'IMG_0456.JPG.jpeg',
-                 'message' => 'It is my pleasure to welcome you to Knowledge Valley International School. Since our founding, we have been committed to one promise: an education that nurtures academic excellence and builds strong character in equal measure. I invite you to visit our campus and see that promise in action. [نص الرسالة الفعلي يُستبدل هنا]'],
-                ['name' => 'Dr. Heba Elshaer', 'role' => 'School Board', 'photo' => 'tttt1.jpg.jpeg',
-                 'message' => 'At KVS, we believe every child carries unique potential. Our role is to provide the environment, the guidance and the opportunities for that potential to flourish — academically, socially and personally. [نص الرسالة الفعلي يُستبدل هنا]'],
-                ['name' => 'Ms. Elham Mahmoud', 'role' => 'School Board', 'photo' => 'Ahlam.jpg',
-                 'message' => 'Welcome to our KVS family. Every new chapter brings a little uncertainty and a great deal of energy, and it is an honour to join a community known for its warmth and care. We hold a strong focus on academic excellence within a safe and inspiring environment, while encouraging every student to grow through activities both inside and outside the classroom. I believe every child is capable of reaching their full potential, and we work hand in hand with parents to make that happen. Communication is the key to every strong partnership, so please always feel free to share your ideas with us. Our children are our priority, and together, in line with British academic standards, we will prepare them to live happily, independently, and ready for the world ahead.'],
+                ['name' => 'Mr. Mohamed Farghaly', 'role' => 'School Board', 'photo' => '/img/leader-mohamed-farghaly.jpg',
+                 'message' => "At our educational institute, our primary mission is to invest in the future generations, recognizing this endeavor as our most challenging yet pivotal pursuit. We are dedicated to molding the lives and destinies of our students, with the ultimate aim of ensuring their prosperous futures. We firmly believe that nurturing our youth is the cornerstone of a nation's revival and renaissance. KVS is unwavering in its commitment to fostering a secure, nurturing, and innovative learning environment. Our foremost objective is to guarantee that every child who crosses our threshold not only receives a world-class education but also undergoes profound personal development, cultivates strong character, and fosters a deep sense of community. As we stand now, we take immense pride in witnessing KVS graduates emerge as exemplars of excellence in all facets of life."],
+                ['name' => 'Dr. Heba Elshaer', 'role' => 'School Board', 'photo' => '/img/leader-heba-elshaer.jpg',
+                 'message' => "KVS has always been more than just a place of learning; it is a place where young minds are nurtured, where dreams are fostered, and where futures are shaped. It is a place where we, as parents and educators, work hand in hand to provide our children with the best possible education and prepare them for the challenges and opportunities of the future. I also have to express the profound sense of privilege and nostalgia that comes with returning to KVS in this new capacity. This school holds a special place in my heart, as my three children, like many of yours, graduated from here. Their journey through KVS — marked by academic excellence, personal growth, and a deep sense of community — has inspired me to contribute to the school's vision that I wholeheartedly believe in. Let us embark on this new academic year with enthusiasm, determination, and a shared commitment to the success and well-being of our students."],
+                ['name' => 'Ms. Elham Mahmoud', 'role' => 'School Board', 'photo' => '/img/leader-elham-mahmoud.jpg',
+                 'message' => "Welcome to our school community — together, we will make it a better place for every student and family. Transitions are never easy, and it is natural to feel some anxiety about who will step in to lead. I extend to you and your family my warmth as we embark on this new journey. It is an honour to join KVS, a school known for its welcoming environment. We are a family, and we work as a team — all for one and one for all. We hold a strong focus on academic excellence within a safe and inspiring environment, and we encourage every student to take part in activities inside and outside the classroom. We believe every child is capable of reaching their potential, and we will do our best to support them to live happily, independently, and well-prepared for the world ahead. Our kids are our priority, and together we will keep our promise to provide a healthy learning environment in parallel with British academic standards."],
             ];
         @endphp
         @foreach ($leaders as $i => $leader)
@@ -31,7 +28,7 @@
             <div class="lg:col-span-2 [direction:ltr]">
                 <div class="relative max-w-xs mx-auto">
                     <div class="absolute -top-3 {{ $i % 2 ? '-right-3' : '-left-3' }} w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-                    <img src="{{ (!empty($leader['photo']) ? kvs_file('a ward from our leader/'.$leader['photo']) : null) ?? '/images/placeholders/leadership.svg' }}" alt="{{ $leader['name'] }}" class="relative w-full aspect-[4/5] object-cover rounded-sm shadow-xl" width="800" height="1000" loading="lazy">
+                    <img src="{{ $leader['photo'] }}" alt="{{ $leader['name'] }}" class="relative w-full aspect-[4/5] object-cover rounded-sm shadow-xl" width="800" height="1000" loading="lazy">
                 </div>
             </div>
             <div class="lg:col-span-3 [direction:ltr]">

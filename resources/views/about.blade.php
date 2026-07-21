@@ -4,7 +4,7 @@
 @section('meta_description', 'Since 2008, Knowledge Valley International School has combined a rigorous British curriculum with character-building — discover our story, vision, mission and values.')
 
 @section('content')
-@php $valleyImgs = kvs_images('A Valley of Character-Building'); @endphp
+@php $valleyImgs = ['/img/campus.jpg']; @endphp
 
 @include('partials.page-hero', [
     'title' => 'Our Story & Philosophy',
@@ -35,7 +35,7 @@
         </div>
         <div class="reveal relative">
             <div class="absolute -top-4 -right-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-            <img src="{{ $valleyImgs[2] ?? ($valleyImgs[0] ?? '/images/placeholders/welcome.svg') }}" alt="Life at Knowledge Valley International School" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
+            <img src="{{ $valleyImgs[2] ?? ($valleyImgs[0] ?? '/img/welcome.svg') }}" alt="Life at Knowledge Valley International School" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
         </div>
     </div>
 </section>
@@ -43,7 +43,7 @@
 {{-- Purpose quote band --}}
 <section class="bg-maroon-900 text-ivory relative overflow-hidden">
     <div class="absolute -right-24 -top-24 w-[26rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="relative container-site py-14 sm:py-16 text-center">
         <p class="eyebrow !text-gold-400">Our Purpose</p>

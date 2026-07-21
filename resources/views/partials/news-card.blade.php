@@ -1,7 +1,7 @@
 {{-- Usage: @include('partials.news-card', ['post' => $post]) --}}
 <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200 flex flex-col">
     <a href="{{ route('news.show', $post) }}" class="block overflow-hidden">
-        <img src="{{ $post->image ?: '/images/placeholders/welcome.svg' }}" alt="{{ $post->title }}"
+        <img src="{{ $post->image ?: '/img/welcome.svg' }}" alt="{{ $post->title }}"
              class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
     </a>
     <div class="p-6 flex flex-col grow">

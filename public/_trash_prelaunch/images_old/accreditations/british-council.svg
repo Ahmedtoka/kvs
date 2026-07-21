@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80" role="img" aria-label="BRITISH COUNCIL">
+  <g>
+    <circle cx="28" cy="40" r="17" fill="none" stroke="#1A1A2E" stroke-width="2.5"/>
+    <circle cx="28" cy="40" r="10.5" fill="none" stroke="#c9a24b" stroke-width="1.5"/>
+    <path d="M28 32 l2.4 5 5.4.6 -4 3.7 1.1 5.3 -4.9-2.7 -4.9 2.7 1.1-5.3 -4-3.7 5.4-.6z" fill="#1A1A2E"/>
+  </g>
+  <text x="54" y="36" font-family="Georgia, 'Times New Roman', serif" font-size="13.5" letter-spacing="0.4" fill="#1A1A2E">BRITISH</text>
+  <text x="54" y="56" font-family="Georgia, 'Times New Roman', serif" font-size="16.5" font-weight="bold" letter-spacing="0.6" fill="#1A1A2E">COUNCIL</text>
+</svg>

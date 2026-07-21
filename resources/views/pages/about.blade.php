@@ -37,7 +37,7 @@
         </div>
         <div class="reveal relative">
             <div class="absolute -top-4 -left-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-            <img src="/images/placeholders/about-main.svg" alt="The KVS campus" class="relative w-full rounded-sm shadow-xl" width="1600" height="1000">
+            <img src="/img/about-main.svg" alt="The KVS campus" class="relative w-full rounded-sm shadow-xl" width="1600" height="1000">
             <div class="absolute -bottom-6 right-6 bg-maroon-900 text-ivory px-6 py-4 rounded-sm shadow-lg">
                 <span class="block font-display text-2xl font-bold text-gold-400">Since 2008</span>
                 <span class="block text-xs tracking-widest uppercase text-ivory/70">Excellence in Education</span>

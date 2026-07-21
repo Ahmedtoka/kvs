@@ -9,7 +9,7 @@
     'title'    => 'Primary',
     'lead'     => 'Strong academic foundations in English, Maths and Science — enriched by languages, arts, and the Cambridge Learner Attributes.',
     'badge'    => 'Years 1 – 6 · Ages 5–11',
-    'image'    => '/images/placeholders/stage-primary.svg',
+    'image'    => '/img/stage-primary.svg',
     'overview' => [
         'Primary at KVS follows the Cambridge Primary programme in English, Mathematics and Science, benchmarked by Cambridge Progression Tests. Lessons are active and challenging, with clear feedback so every child knows their next step.',
         'Beyond the core, students study Arabic, Religion and Social Studies per national requirements, begin German or French with our certified partners, and grow through art, music, PE, ICT and a wide programme of clubs and trips.',

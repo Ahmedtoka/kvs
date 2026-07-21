@@ -12,7 +12,7 @@
 ])
 
 @include('partials.stage-page', ['stage' => [
-    'photo' => kvs_image("Find Your Child's Place at KVS", 2, kvs_image('find your child place', 2)),
+    'photo' => '/img/stage-secondary.jpg',
     'chip' => 'Years 7+ · IGCSE Pathway',
     'title' => 'Secondary',
     'img' => 'stage-secondary',

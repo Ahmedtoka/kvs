@@ -12,7 +12,7 @@
 ])
 
 @include('partials.stage-page', ['stage' => [
-    'photo' => kvs_image("Find Your Child's Place at KVS", 0, kvs_image('find your child place', 0)),
+    'photo' => '/img/stage-early-years.jpg',
     'chip' => 'FS1 – FS2 · Ages 3–5',
     'title' => 'Early Years',
     'img' => 'stage-early',

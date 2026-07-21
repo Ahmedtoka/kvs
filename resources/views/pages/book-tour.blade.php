@@ -8,7 +8,7 @@
 
 <section class="py-16 sm:py-24 bg-maroon-950 text-ivory relative overflow-hidden min-h-[70vh]">
     <div class="absolute -right-32 -top-24 w-[34rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="relative container-site grid lg:grid-cols-2 gap-14 items-center">
         <div class="reveal">

@@ -33,7 +33,7 @@
             @endphp
             @foreach ($gallery as $item)
             <figure class="reveal group relative rounded-sm overflow-hidden">
-                <img src="/images/placeholders/{{ $item['img'] }}.svg" alt="{{ $item['label'] }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1200" loading="lazy">
+                <img src="/img/{{ $item['img'] }}.svg" alt="{{ $item['label'] }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1200" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-maroon-950/85 via-maroon-950/10 to-transparent"></div>
                 <figcaption class="absolute bottom-0 inset-x-0 p-4 sm:p-5 text-ivory font-display font-semibold text-sm sm:text-lg">{{ $item['label'] }}</figcaption>
             </figure>

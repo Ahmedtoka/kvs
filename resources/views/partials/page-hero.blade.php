@@ -1,7 +1,7 @@
 {{-- Inner page hero: expects $title, optional $subtitle, optional $crumbs = [['label','href'], ...] --}}
 <section class="relative bg-maroon-950 text-ivory overflow-hidden">
     <div class="absolute -right-32 -bottom-40 w-[30rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="absolute inset-0 bg-gradient-to-br from-maroon-900/60 to-maroon-950 pointer-events-none" aria-hidden="true"></div>
     <div class="relative container-site py-16 sm:py-20">

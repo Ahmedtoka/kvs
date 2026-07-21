@@ -26,7 +26,7 @@
             @foreach ($stages as $s)
             <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200">
                 <a href="{{ route($s['route']) }}" class="block overflow-hidden">
-                    <img src="/images/placeholders/{{ $s['img'] }}.svg" alt="{{ $s['title'] }} at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
+                    <img src="/img/{{ $s['img'] }}.svg" alt="{{ $s['title'] }} at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
                 </a>
                 <div class="p-7">
                     <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">{{ $s['badge'] }}</span>
@@ -46,7 +46,7 @@
 {{-- Languages strip --}}
 <section class="py-16 sm:py-20 bg-maroon-950 text-ivory relative overflow-hidden">
     <div class="absolute -left-32 -bottom-24 w-[28rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="relative container-site flex flex-col lg:flex-row items-center justify-between gap-8">
         <div>

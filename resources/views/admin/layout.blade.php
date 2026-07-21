@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Admin') — KVS Admin</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" href="/images/logo-mark.png">
+    <link rel="icon" type="image/png" href="/img/logo-mark.png">
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-dvh bg-beige-100 lg:flex">
@@ -14,7 +14,7 @@
     <aside class="lg:w-64 shrink-0 bg-maroon-950 text-ivory lg:min-h-dvh">
         <div class="flex items-center justify-between lg:justify-start gap-3 px-5 py-4 border-b border-gold-700/20">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                <img src="/images/logo-mark.png" alt="" class="h-9 w-auto">
+                <img src="/img/logo-mark.png" alt="" class="h-9 w-auto">
                 <span class="font-display font-bold">KVS Admin</span>
             </a>
             <button id="admin-menu-btn" class="lg:hidden p-2 -mr-2 cursor-pointer" aria-expanded="false" aria-controls="admin-nav" aria-label="Menu">

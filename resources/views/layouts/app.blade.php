@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Knowledge Valley International School')</title>
     <meta name="description" content="@yield('meta_description', 'KVS is a top-tier British curriculum international school in Giza, Egypt — accredited by Cambridge, Pearson Edexcel, Oxford AQA and the British Council.')">
-    <link rel="icon" type="image/png" href="/images/logo-mark.png">
+    <link rel="icon" type="image/png" href="/img/logo-mark.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="pb-16 sm:pb-0">

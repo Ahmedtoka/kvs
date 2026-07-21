@@ -15,7 +15,7 @@
 <section class="py-16 sm:py-24 bg-ivory">
     <div class="container-site grid lg:grid-cols-3 gap-12 items-start">
         <article class="lg:col-span-2 reveal">
-            <img src="{{ $post->image ?: '/images/placeholders/welcome.svg' }}" alt="{{ $post->title }}" class="w-full rounded-sm shadow-lg aspect-[16/9] object-cover" width="1600" height="900">
+            <img src="{{ $post->image ?: '/img/welcome.svg' }}" alt="{{ $post->title }}" class="w-full rounded-sm shadow-lg aspect-[16/9] object-cover" width="1600" height="900">
             <div class="mt-8 space-y-5 text-charcoal-700 leading-[1.8]">
                 @foreach (preg_split('/\n\n+/', $post->body) as $para)
                 <p>{{ $para }}</p>

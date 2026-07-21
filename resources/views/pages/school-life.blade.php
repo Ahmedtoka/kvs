@@ -33,7 +33,7 @@
             @foreach ($activities as $act)
             <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow overflow-hidden border border-beige-200">
                 <div class="overflow-hidden">
-                    <img src="/images/placeholders/{{ $act['img'] }}.svg" alt="{{ $act['title'] }}" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
+                    <img src="/img/{{ $act['img'] }}.svg" alt="{{ $act['title'] }}" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
                 </div>
                 <div class="p-6">
                     <h3 class="font-display text-xl font-semibold text-maroon-900">{{ $act['title'] }}</h3>
@@ -79,7 +79,7 @@
             @endphp
             @foreach ($facilities as $f)
             <figure class="reveal group relative rounded-sm overflow-hidden">
-                <img src="/images/placeholders/{{ $f['img'] }}.svg" alt="{{ $f['label'] }} at KVS" class="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-[1.05]" width="800" height="800" loading="lazy">
+                <img src="/img/{{ $f['img'] }}.svg" alt="{{ $f['label'] }} at KVS" class="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-[1.05]" width="800" height="800" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-maroon-950/85 via-maroon-950/10 to-transparent"></div>
                 <figcaption class="absolute bottom-0 inset-x-0 p-3.5 text-ivory font-display font-semibold text-sm">{{ $f['label'] }}</figcaption>
             </figure>

@@ -10,7 +10,7 @@
         </div>
         <div class="reveal relative">
             <div class="absolute -top-4 -right-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-            <img src="{{ $stage['photo'] ?? '/images/placeholders/'.$stage['img'].'.svg' }}" alt="{{ $stage['title'] }} at KVS" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
+            <img src="{{ $stage['photo'] ?? '/img/'.$stage['img'].'.svg' }}" alt="{{ $stage['title'] }} at KVS" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
         </div>
     </div>
 </section>

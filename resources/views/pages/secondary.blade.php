@@ -9,7 +9,7 @@
     'title'    => 'Secondary & IGCSE',
     'lead'     => 'Rigorous preparation for Cambridge, Pearson Edexcel and Oxford AQA qualifications — the gateway to leading universities in Egypt and worldwide.',
     'badge'    => 'Years 7+ · IGCSE Pathway',
-    'image'    => '/images/placeholders/stage-secondary.svg',
+    'image'    => '/img/stage-secondary.svg',
     'overview' => [
         'Secondary at KVS builds from Cambridge Lower Secondary into a flexible IGCSE pathway. Students select subjects across three examination boards — Cambridge, Pearson Edexcel and Oxford International AQA — guided by experienced academic advisors.',
         'Alongside examination excellence, students lead houses and clubs, mentor younger years, and complete projects linked to the UN Global Goals — graduating with the character and credentials for top universities.',

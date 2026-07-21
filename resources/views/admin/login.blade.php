@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Login — KVS</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" href="/images/logo-mark.png">
+    <link rel="icon" type="image/png" href="/img/logo-mark.png">
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-dvh bg-maroon-950 flex items-center justify-center p-5 relative overflow-hidden">
     <div class="absolute -right-40 -bottom-48 w-[42rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="">
+        <img src="/img/logo-mark.png" alt="">
     </div>
 
     <div class="relative w-full max-w-md">
         <div class="text-center mb-8">
-            <img src="/images/logo-mark.png" alt="KVS" class="h-20 w-auto mx-auto">
+            <img src="/img/logo-mark.png" alt="KVS" class="h-20 w-auto mx-auto">
             <h1 class="font-display text-2xl font-bold text-ivory mt-4">KVS Admin Panel</h1>
             <p class="text-sm text-ivory/60 mt-1">Knowledge Valley International School</p>
         </div>

@@ -17,13 +17,13 @@
         @php
             /* DEMO leadership messages — replace with real names, photos and messages from the school */
             $leaders = [
-                ['role' => 'Chairman of the Board', 'name' => 'The KVS School Board', 'img' => '/images/placeholders/leadership.svg',
+                ['role' => 'Chairman of the Board', 'name' => 'The KVS School Board', 'img' => '/img/leadership.svg',
                  'quote' => 'Every student who joins Knowledge Valley will experience an education that nurtures academic excellence, builds strong character, and prepares them for lifelong success.',
                  'body'  => 'Our commitment since 2008 has never changed: to graduate young people who are as strong in values as they are in academics. We invest in exceptional teachers, world-class accreditation, and a campus where every child is known, valued and challenged.'],
-                ['role' => 'School Principal', 'name' => 'Principal — KVS', 'img' => '/images/placeholders/about-inset.svg',
+                ['role' => 'School Principal', 'name' => 'Principal — KVS', 'img' => '/img/about-inset.svg',
                  'quote' => 'We believe every child has a unique strength waiting to be discovered — our job is to find it, nurture it, and celebrate it.',
                  'body'  => 'Across Early Years, Primary and Secondary, our teams design learning that is rigorous, joyful and personal. The Cambridge Learner Attributes — confident, responsible, innovative, reflective, engaged — guide everything from lesson planning to school events.'],
-                ['role' => 'Head of Admissions', 'name' => 'Admissions Team — KVS', 'img' => '/images/placeholders/admission-kid.svg',
+                ['role' => 'Head of Admissions', 'name' => 'Admissions Team — KVS', 'img' => '/img/admission-kid.svg',
                  'quote' => 'Choosing a school is one of the biggest decisions a family makes. We are here to make it clear, warm and simple.',
                  'body'  => 'From your first phone call to your child\'s first day, our admissions team walks with you step by step — school tours, friendly assessments, and honest guidance on the right stage and placement for your child.'],
             ];

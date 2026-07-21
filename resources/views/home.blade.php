@@ -1,29 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Knowledge Valley International School — A British International School in Giza, Egypt')
-@section('meta_description', 'KVS is a top-tier British curriculum international school in Giza, Egypt — accredited by Cambridge, Pearson Edexcel, Oxford AQA and the British Council. Book your school tour today.')
+@section('title', 'Knowledge Valley International School â A British International School in Giza, Egypt')
+@section('meta_description', 'KVS is a top-tier British curriculum international school in Giza, Egypt â accredited by Cambridge, Pearson Edexcel, Oxford AQA and the British Council. Book your school tour today.')
 
 @section('content')
 @php
-    // Auto-detected photo folders (public/images/<name>) — placeholders used when empty
-    $valleyImgs = kvs_images('A Valley of Character-Building');
-    if (!count($valleyImgs)) {
-        foreach (['shcool.jpeg', 'school.jpeg', 'school.jpg', 'school.png'] as $f) {
-            if ($p = kvs_file($f)) { $valleyImgs[] = $p; break; }
-        }
-    }
-    $stageImgs  = array_merge(kvs_images("Find Your Child's Place at KVS"), kvs_images('find your child place'));
-    $lifeImgs   = kvs_images('Life at KVS');
-    $leaderImgs = kvs_images('a ward from our leader');
+    $valleyImgs = ['/img/campus.jpg'];
+    $stageImgs  = ['/img/stage-early-years.jpg', '/img/stage-primary.jpg', '/img/stage-secondary.jpg'];
+    $lifeImgs   = ['/img/life-1.jpg','/img/life-2.jpg','/img/life-3.jpg','/img/life-4.jpg','/img/life-5.jpg','/img/life-6.jpg'];
 @endphp
 {{-- ============ 1. HERO ============ --}}
 <section class="relative overflow-hidden bg-maroon-950 text-ivory">
     {{-- photo layer (replace placeholder with real campus photo) --}}
     <div class="absolute inset-0">
-        <img src="{{ $valleyImgs[0] ?? '/images/placeholders/hero-campus.svg' }}" alt="" class="w-full h-full object-cover {{ count($valleyImgs) ? 'opacity-[0.32]' : 'opacity-[0.14]' }}" width="1600" height="1000">
+        <img src="{{ $valleyImgs[0] ?? '/img/hero-campus.svg' }}" alt="" class="w-full h-full object-cover {{ count($valleyImgs) ? 'opacity-[0.32]' : 'opacity-[0.14]' }}" width="1600" height="1000">
         <div class="absolute inset-0 bg-gradient-to-b from-maroon-950/80 via-maroon-900/70 to-maroon-950"></div>
         <div class="absolute -right-40 -bottom-48 w-[42rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-            <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+            <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
         </div>
     </div>
 
@@ -31,7 +24,7 @@
         <div class="flex flex-col items-center gap-4 mb-6">
             <span class="inline-flex items-center gap-2.5 rounded-full border border-gold-500/40 bg-gold-500/10 px-6 py-2.5 text-[13px] sm:text-sm font-semibold tracking-[0.18em] uppercase text-gold-300">
                 <svg class="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
-                Since 2008 · 18 Years of Excellence
+                Since 2008 Â· 18 Years of Excellence
             </span>
             <p class="eyebrow !text-gold-400">A British International School</p>
         </div>
@@ -71,7 +64,7 @@
             </p>
             <p class="mt-4 text-charcoal-600 leading-[1.75]">
                 Every student is encouraged to discover their strengths, embrace challenges, and pursue excellence
-                with confidence — prepared not only for university, but for life.
+                with confidence â prepared not only for university, but for life.
             </p>
             <a href="/about" class="inline-flex items-center gap-2 mt-8 font-semibold text-maroon-800 hover:text-maroon-600 transition-colors group">
                 Discover our story
@@ -80,7 +73,7 @@
         </div>
         <div class="reveal relative">
             <div class="absolute -top-4 -left-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-            <img src="{{ $valleyImgs[1] ?? ($valleyImgs[0] ?? '/images/placeholders/welcome.svg') }}" alt="Students learning at Knowledge Valley International School" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
+            <img src="{{ $valleyImgs[1] ?? ($valleyImgs[0] ?? '/img/welcome.svg') }}" alt="Students learning at Knowledge Valley International School" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
             <div class="absolute -bottom-6 right-6 bg-maroon-900 text-ivory px-6 py-4 rounded-sm shadow-lg">
                 <span class="block font-display text-2xl font-bold text-gold-400">Since 2008</span>
                 <span class="block text-xs tracking-widest uppercase text-ivory/70">Excellence in Education</span>
@@ -119,7 +112,7 @@
             <p class="eyebrow">Academics</p>
             <h2 class="heading-serif text-3xl sm:text-4xl lg:text-[42px] mt-3 gold-rule">Find Your Child's Place at KVS</h2>
             <p class="mt-6 text-charcoal-600 leading-relaxed">
-                A seamless British curriculum journey — from first steps in Early Years to Cambridge, Edexcel
+                A seamless British curriculum journey â from first steps in Early Years to Cambridge, Edexcel
                 and Oxford AQA qualifications in Secondary.
             </p>
         </div>
@@ -128,10 +121,10 @@
             {{-- Early Years --}}
             <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200">
                 <div class="overflow-hidden">
-                    <img src="{{ $stageImgs[0] ?? '/images/placeholders/stage-early.svg' }}" alt="Early Years classroom at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
+                    <img src="{{ $stageImgs[0] ?? '/img/stage-early.svg' }}" alt="Early Years classroom at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
                 </div>
                 <div class="p-7">
-                    <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">FS1 – FS2 · Ages 3–5</span>
+                    <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">FS1 â FS2 Â· Ages 3â5</span>
                     <h3 class="font-display text-2xl font-semibold text-maroon-900 mt-4">Early Years</h3>
                     <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">
                         Our Early Years programme provides a joyful, nurturing, and inspiring start to every child's
@@ -150,10 +143,10 @@
             {{-- Primary --}}
             <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200">
                 <div class="overflow-hidden">
-                    <img src="{{ $stageImgs[1] ?? '/images/placeholders/stage-primary.svg' }}" alt="Primary students at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
+                    <img src="{{ $stageImgs[1] ?? '/img/stage-primary.svg' }}" alt="Primary students at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
                 </div>
                 <div class="p-7">
-                    <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">Years 1 – 6 · Ages 5–11</span>
+                    <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">Years 1 â 6 Â· Ages 5â11</span>
                     <h3 class="font-display text-2xl font-semibold text-maroon-900 mt-4">Primary</h3>
                     <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">
                         Our Primary programme empowers pupils to become confident, curious, and independent learners.
@@ -172,13 +165,13 @@
             {{-- Secondary --}}
             <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200">
                 <div class="overflow-hidden">
-                    <img src="{{ $stageImgs[2] ?? '/images/placeholders/stage-secondary.svg' }}" alt="Secondary students at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
+                    <img src="{{ $stageImgs[2] ?? '/img/stage-secondary.svg' }}" alt="Secondary students at KVS" class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
                 </div>
                 <div class="p-7">
-                    <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">Years 7+ · IGCSE Pathway</span>
+                    <span class="inline-block text-xs font-semibold bg-gold-100 text-gold-800 px-3 py-1 rounded-full">Years 7+ Â· IGCSE Pathway</span>
                     <h3 class="font-display text-2xl font-semibold text-maroon-900 mt-4">Secondary &amp; IGCSE</h3>
                     <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">
-                        Rigorous preparation for Cambridge, Pearson Edexcel and Oxford AQA qualifications — the
+                        Rigorous preparation for Cambridge, Pearson Edexcel and Oxford AQA qualifications â the
                         gateway to leading universities.
                     </p>
                     <a href="/academics/secondary" class="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-maroon-800 hover:text-maroon-600 transition-colors">
@@ -194,7 +187,7 @@
 {{-- ============ 5. THE KVS MODEL ============ --}}
 <section class="py-20 sm:py-28 bg-maroon-950 text-ivory relative overflow-hidden">
     <div class="absolute -left-40 top-10 w-[36rem] opacity-[0.04] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="relative container-site">
         <div class="text-center max-w-2xl mx-auto reveal">
@@ -244,11 +237,11 @@
         <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
             @php
                 $advantages = [
-                    ['title' => 'Top-Tier British Curriculum', 'desc' => 'Accredited pathways through Cambridge, Pearson Edexcel and Oxford International AQA — from Early Years to IGCSE.'],
-                    ['title' => 'French Language Excellence', 'desc' => 'In partnership with the Institut Français d\'Égypte, our French programme provides high-quality language education that develops fluency, cultural awareness, and effective communication. Students gain internationally recognised language skills while building a strong foundation for future academic and global opportunities.'],
+                    ['title' => 'Top-Tier British Curriculum', 'desc' => 'Accredited pathways through Cambridge, Pearson Edexcel and Oxford International AQA â from Early Years to IGCSE.'],
+                    ['title' => 'French Language Excellence', 'desc' => 'In partnership with the Institut FranÃ§ais d\'Ãgypte, our French programme provides high-quality language education that develops fluency, cultural awareness, and effective communication. Students gain internationally recognised language skills while building a strong foundation for future academic and global opportunities.'],
                     ['title' => 'German Language Excellence', 'desc' => 'In partnership with the Goethe-Institut, our German programme provides internationally recognised language learning that develops confidence, cultural awareness, and communication skills. Students are prepared for globally recognised Goethe examinations while building a strong foundation for future academic and professional opportunities.'],
-                    ['title' => 'A Smart, Cashless Campus', 'desc' => 'SPARE and Kashier systems let parents handle fees, uniforms, canteen and transport digitally — with full peace of mind.'],
-                    ['title' => 'Our House System', 'desc' => 'Every student is welcomed into one of our four houses — Resilience, Wisdom, Innovation, and Compassion — each representing the core values of Knowledge Valley School. Through friendly competitions, leadership opportunities, community service, and collaborative activities, our House System fosters teamwork, confidence, school spirit, and a strong sense of belonging.'],
+                    ['title' => 'A Smart, Cashless Campus', 'desc' => 'SPARE and Kashier systems let parents handle fees, uniforms, canteen and transport digitally â with full peace of mind.'],
+                    ['title' => 'Our House System', 'desc' => 'Every student is welcomed into one of our four houses â Resilience, Wisdom, Innovation, and Compassion â each representing the core values of Knowledge Valley School. Through friendly competitions, leadership opportunities, community service, and collaborative activities, our House System fosters teamwork, confidence, school spirit, and a strong sense of belonging.'],
                     ['title' => 'A Vibrant School Life', 'desc' => 'Science fairs, book fairs, chess academy, art exhibitions, charity initiatives and performances all year round.'],
                 ];
             @endphp
@@ -284,17 +277,17 @@
         <div class="mt-12 grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             @php
                 $gallery = [
-                    ['img' => 'g-science-fair', 'label' => 'KVS Science Fair'],
-                    ['img' => 'g-graduation', 'label' => 'Graduation 2025'],
-                    ['img' => 'g-art', 'label' => 'Art Exhibition'],
-                    ['img' => 'g-book-fair', 'label' => 'KVS Book Fair'],
-                    ['img' => 'g-chess', 'label' => 'Chess Academy'],
-                    ['img' => 'g-peace-day', 'label' => 'International Peace Day'],
+                    ['folder' => '/img/event-science-fair.jpg', 'label' => 'KVS Science Fair'],
+                    ['folder' => '/img/event-graduation-2026.jpg', 'label' => 'Graduation 2026'],
+                    ['folder' => '/img/event-art-exhibition-2026.jpg', 'label' => 'Art Exhibition 2026'],
+                    ['folder' => '/img/event-senior-walk-2026.jpg', 'label' => 'Senior Walk 2026'],
+                    ['folder' => '/img/event-6th-october-celebration.jpg', 'label' => '6th of October Celebration'],
+                    ['folder' => '/img/event-international-peace-day.jpg', 'label' => 'International Peace Day'],
                 ];
             @endphp
             @foreach ($gallery as $item)
             <a href="/school-life" class="reveal group relative rounded-sm overflow-hidden block focus:outline-2 focus:outline-offset-2 focus:outline-gold-600">
-                <img src="{{ count($lifeImgs) ? $lifeImgs[$loop->index % count($lifeImgs)] : '/images/placeholders/'.$item['img'].'.svg' }}" alt="{{ $item['label'] }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1000" loading="lazy">
+                <img src="{{ $item['folder'] }}" alt="{{ $item['label'] }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1000" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-maroon-950/85 via-maroon-950/10 to-transparent"></div>
                 <span class="absolute bottom-0 inset-x-0 p-4 sm:p-5 text-ivory font-display font-semibold text-sm sm:text-lg">{{ $item['label'] }}</span>
             </a>
@@ -303,33 +296,66 @@
     </div>
 </section>
 
-{{-- ============ 8. TESTIMONIALS ============ --}}
+{{-- ============ 8. TESTIMONIALS â VIDEO SLIDER ============ --}}
 <section class="py-20 sm:py-28 bg-maroon-50">
     <div class="container-site">
         <div class="text-center max-w-2xl mx-auto reveal">
             <p class="eyebrow">Our Community</p>
             <h2 class="heading-serif text-3xl sm:text-4xl lg:text-[42px] mt-3 gold-rule">What Parents Say</h2>
+            <p class="mt-6 text-charcoal-600 leading-relaxed">Hear directly from KVS families â in their own words.</p>
         </div>
 
-        <div class="mt-14 grid md:grid-cols-3 gap-8">
-            @php
-                /* SAMPLE quotes — replace with real testimonials from school administration */
-                $testimonials = [
-                    ['quote' => 'From the first tour, we felt the difference. KVS treats character as seriously as academics — and it shows in how my daughter carries herself.', 'name' => 'Parent of a Year 4 pupil'],
-                    ['quote' => 'The communication is outstanding. Between the SPARE app and the teachers\' follow-up, I always know exactly how my son is doing.', 'name' => 'Parent of a Year 7 pupil'],
-                    ['quote' => 'My children are learning German and French with certified institutes — inside their own school. That is something we could not find elsewhere.', 'name' => 'Parent of two KVS pupils'],
-                ];
-            @endphp
-            @foreach ($testimonials as $t)
-            <figure class="reveal bg-white rounded-sm shadow-md p-8 border-t-[3px] border-gold-500 flex flex-col">
-                <svg class="w-9 h-9 text-gold-300" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                <blockquote class="mt-5 text-charcoal-700 leading-relaxed grow">{{ $t['quote'] }}</blockquote>
-                <figcaption class="mt-6 pt-5 border-t border-beige-200 text-sm font-semibold text-maroon-800">{{ $t['name'] }}</figcaption>
-            </figure>
-            @endforeach
+        @php
+            $reviews = ['/videos/testimonial-1.mp4', '/videos/testimonial-2.mp4', '/videos/testimonial-3.mp4', '/videos/testimonial-4.mp4', '/videos/testimonial-5.mp4'];
+        @endphp
+
+        <div class="relative mt-14 reveal">
+            <button type="button" data-vslide="prev" aria-label="Previous videos"
+                    class="hidden md:flex absolute -left-3 lg:-left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white shadow-lg border border-beige-200 items-center justify-center text-maroon-800 hover:bg-gold-500 hover:text-maroon-950 hover:border-gold-500 transition-colors cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+            </button>
+
+            <div id="reviews-track" class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 px-1">
+                @foreach ($reviews as $v)
+                <div class="snap-center shrink-0 w-[76vw] sm:w-64 md:w-[290px]">
+                    <div class="relative rounded-lg overflow-hidden shadow-xl bg-maroon-950 aspect-[9/16] ring-1 ring-maroon-900/10">
+                        <video class="w-full h-full object-cover" controls preload="none" playsinline
+                               src="{{ $v }}">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <button type="button" data-vslide="next" aria-label="Next videos"
+                    class="hidden md:flex absolute -right-3 lg:-right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white shadow-lg border border-beige-200 items-center justify-center text-maroon-800 hover:bg-gold-500 hover:text-maroon-950 hover:border-gold-500 transition-colors cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            </button>
         </div>
+        <p class="mt-4 text-center text-xs text-charcoal-600/70 md:hidden">Swipe to see more â</p>
     </div>
 </section>
+
+<style>
+    #reviews-track { scrollbar-width: none; -ms-overflow-style: none; }
+    #reviews-track::-webkit-scrollbar { display: none; }
+</style>
+<script>
+    (function () {
+        var track = document.getElementById('reviews-track');
+        if (!track) return;
+        function step() {
+            var card = track.querySelector(':scope > div');
+            return card ? card.offsetWidth + 20 : 300;
+        }
+        document.querySelectorAll('[data-vslide]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                track.scrollBy({ left: (btn.dataset.vslide === 'next' ? 1 : -1) * step(), behavior: 'smooth' });
+            });
+        });
+    })();
+</script>
 
 {{-- ============ 9. LEADERSHIP ============ --}}
 <section class="py-20 sm:py-28 bg-ivory">
@@ -337,16 +363,16 @@
         <div class="lg:col-span-2 reveal">
             <div class="relative max-w-sm mx-auto">
                 <div class="absolute -top-4 -right-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-                <img src="{{ $leaderImgs[0] ?? '/images/placeholders/leadership.svg' }}" alt="The KVS School Board" class="relative w-full aspect-[4/3] object-cover rounded-sm shadow-xl" width="1600" height="1000" loading="lazy">
+                <img src="{{ '/img/leader-mohamed-farghaly.jpg' }}" alt="Mr. Mohamed Farghaly â KVS School Board" class="relative w-full aspect-[4/3] object-cover rounded-sm shadow-xl" width="1600" height="1000" loading="lazy">
             </div>
         </div>
         <div class="lg:col-span-3 reveal">
             <p class="eyebrow">A Word from Our Leadership</p>
             <blockquote class="font-display text-2xl sm:text-3xl leading-snug text-maroon-900 mt-5">
-                "Every student who joins Knowledge Valley will experience an education that nurtures academic
-                excellence, builds strong character, and prepares them for lifelong success."
+                "At KVS, our mission is to invest in future generations — guaranteeing every child not only a world-class education, but profound personal development, strong character, and a deep sense of community."
             </blockquote>
-            <p class="mt-6 text-sm font-semibold text-charcoal-700 tracking-wide uppercase">The KVS School Board</p>
+            <p class="mt-6 font-display text-xl font-semibold text-maroon-900">Mr. Mohamed Farghaly</p>
+            <p class="text-sm font-semibold text-gold-700 tracking-wide uppercase mt-1">KVS School Board</p>
             <a href="/leadership" class="inline-flex items-center gap-2 mt-6 font-semibold text-maroon-800 hover:text-maroon-600 transition-colors group">
                 Read our leadership messages
                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/></svg>
@@ -367,7 +393,7 @@
         <ol class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-6">
             @php
                 $steps = [
-                    ['title' => 'Register Your Interest', 'desc' => 'Fill the short form below — or call our admissions team directly.'],
+                    ['title' => 'Register Your Interest', 'desc' => 'Fill the short form below â or call our admissions team directly.'],
                     ['title' => 'Visit the School', 'desc' => 'Book a personal tour and see life at KVS with your own eyes.'],
                     ['title' => 'Student Assessment', 'desc' => 'A friendly age-appropriate assessment to place your child correctly.'],
                     ['title' => 'Welcome to the Valley', 'desc' => 'Complete the paperwork and your child\'s KVS journey begins.'],
@@ -395,7 +421,7 @@
 {{-- ============ 11. LEAD FORM ============ --}}
 <section id="book-tour" class="py-20 sm:py-28 bg-maroon-950 text-ivory relative overflow-hidden">
     <div class="absolute -right-32 -top-24 w-[34rem] opacity-[0.05] pointer-events-none select-none" aria-hidden="true">
-        <img src="/images/logo-mark.png" alt="" class="w-full h-auto">
+        <img src="/img/logo-mark.png" alt="" class="w-full h-auto">
     </div>
     <div class="relative container-site grid lg:grid-cols-2 gap-14 items-center">
         <div class="reveal">
@@ -435,7 +461,7 @@
                 <input type="hidden" name="type" value="callback">
                 <div class="hidden" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                 <h3 class="font-display text-2xl font-semibold text-maroon-900">Request a Call Back</h3>
-                <p class="mt-1.5 text-sm text-charcoal-600">Our team replies within 24 hours, Sun–Thu.</p>
+                <p class="mt-1.5 text-sm text-charcoal-600">Our team replies within 24 hours, SunâThu.</p>
 
                 <div class="mt-5">@include('partials.form-status')</div>
 
@@ -466,8 +492,8 @@
                             <select id="stage" name="stage"
                                     class="w-full h-12 px-3 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                                 <option value="" selected>Not sure yet</option>
-                                <option value="early-years">Early Years (FS1–FS2)</option>
-                                <option value="primary">Primary (Years 1–6)</option>
+                                <option value="early-years">Early Years (FS1âFS2)</option>
+                                <option value="primary">Primary (Years 1â6)</option>
                                 <option value="secondary">Secondary &amp; IGCSE</option>
                             </select>
                         </div>

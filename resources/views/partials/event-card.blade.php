@@ -1,7 +1,7 @@
 {{-- Usage: @include('partials.event-card', ['event' => $event]) --}}
 <article class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-beige-200 flex flex-col">
     <a href="{{ route('events.show', $event) }}" class="block overflow-hidden relative">
-        <img src="{{ $event->image ?: '/images/placeholders/hero-campus.svg' }}" alt="{{ $event->title }}"
+        <img src="{{ $event->image ?: '/img/hero-campus.svg' }}" alt="{{ $event->title }}"
              class="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]" width="1600" height="1000" loading="lazy">
         <span class="absolute top-4 left-4 bg-maroon-900 text-ivory rounded-sm px-3 py-2 text-center leading-none shadow-md">
             <span class="block font-display text-xl font-bold text-gold-400">{{ $event->starts_at->format('d') }}</span>
