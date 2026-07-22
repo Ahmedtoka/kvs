@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CareerAdminController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\LeadAdminController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
@@ -72,6 +73,13 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::get('/settings', [SettingController::class, 'index'])->middleware('role:content_editor')->name('settings');
     Route::patch('/settings', [SettingController::class, 'update'])->middleware('role:content_editor')->name('settings.update');
+
+    Route::middleware('role:content_editor')->group(function () {
+        Route::get('/events', [EventAdminController::class, 'index'])->name('events.index');
+        Route::post('/events', [EventAdminController::class, 'store'])->name('events.store');
+        Route::patch('/events/{event}', [EventAdminController::class, 'update'])->name('events.update');
+        Route::delete('/events/{event}', [EventAdminController::class, 'destroy'])->name('events.destroy');
+    });
 
     Route::middleware('role:super_admin')->group(function () {
         Route::get('/users', [UserAdminController::class, 'index'])->name('users.index');

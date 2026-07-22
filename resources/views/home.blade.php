@@ -276,20 +276,13 @@
 
         <div class="mt-12 grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             @php
-                $gallery = [
-                    ['folder' => '/img/event-science-fair.jpg', 'label' => 'KVS Science Fair'],
-                    ['folder' => '/img/event-graduation-2026.jpg', 'label' => 'Graduation 2026'],
-                    ['folder' => '/img/event-art-exhibition-2026.jpg', 'label' => 'Art Exhibition 2026'],
-                    ['folder' => '/img/event-senior-walk-2026.jpg', 'label' => 'Senior Walk 2026'],
-                    ['folder' => '/img/event-6th-october-celebration.jpg', 'label' => '6th of October Celebration'],
-                    ['folder' => '/img/event-international-peace-day.jpg', 'label' => 'International Peace Day'],
-                ];
+                $gallery = rescue(fn () => \App\Models\Event::active()->where('is_featured', true)->ordered()->limit(6)->get(), collect());
             @endphp
             @foreach ($gallery as $item)
             <a href="/school-life" class="reveal group relative rounded-sm overflow-hidden block focus:outline-2 focus:outline-offset-2 focus:outline-gold-600">
-                <img src="{{ $item['folder'] }}" alt="{{ $item['label'] }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1000" loading="lazy">
+                <img src="{{ $item->image }}" alt="{{ $item->title }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1000" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-maroon-950/85 via-maroon-950/10 to-transparent"></div>
-                <span class="absolute bottom-0 inset-x-0 p-4 sm:p-5 text-ivory font-display font-semibold text-sm sm:text-lg">{{ $item['label'] }}</span>
+                <span class="absolute bottom-0 inset-x-0 p-4 sm:p-5 text-ivory font-display font-semibold text-sm sm:text-lg">{{ $item->title }}</span>
             </a>
             @endforeach
         </div>
@@ -427,7 +420,7 @@
                 "At KVS, our mission is to invest in future generations — guaranteeing every child not only a world-class education, but profound personal development, strong character, and a deep sense of community."
             </blockquote>
             <p class="mt-6 font-display text-xl font-semibold text-maroon-900">Mr. Mohamed Farghaly</p>
-            <p class="text-sm font-semibold text-gold-700 tracking-wide uppercase mt-1">KVS School Board</p>
+            <p class="text-sm font-semibold text-gold-700 tracking-wide uppercase mt-1">Founder &amp; Chairman</p>
             <a href="/leadership" class="inline-flex items-center gap-2 mt-6 font-semibold text-maroon-800 hover:text-maroon-600 transition-colors group">
                 Read our leadership messages
                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/></svg>

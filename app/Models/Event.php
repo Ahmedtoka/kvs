@@ -9,7 +9,7 @@ class Event extends Model
 {
     protected $fillable = [
         'title', 'slug', 'excerpt', 'body', 'image',
-        'location', 'starts_at', 'ends_at', 'is_featured',
+        'location', 'starts_at', 'ends_at', 'is_featured', 'sort_order', 'is_active',
     ];
 
     protected function casts(): array
@@ -18,6 +18,7 @@ class Event extends Model
             'starts_at'   => 'datetime',
             'ends_at'     => 'datetime',
             'is_featured' => 'boolean',
+            'is_active'   => 'boolean',
         ];
     }
 
@@ -26,13 +27,13 @@ class Event extends Model
         return 'slug';
     }
 
-    public function scopeUpcoming(Builder $query): Builder
+    public function scopeActive(Builder $query): Builder
     {
-        return $query->where('starts_at', '>=', now())->orderBy('starts_at');
+        return $query->where('is_active', true);
     }
 
-    public function scopePast(Builder $query): Builder
+    public function scopeOrdered(Builder $query): Builder
     {
-        return $query->where('starts_at', '<', now())->orderByDesc('starts_at');
+        return $query->orderBy('sort_order')->orderBy('id');
     }
 }
