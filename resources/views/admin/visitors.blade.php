@@ -41,7 +41,7 @@
             @php $devColors = ['mobile' => 'bg-maroon-100 text-maroon-800', 'desktop' => 'bg-gold-100 text-gold-800', 'tablet' => 'bg-beige-200 text-charcoal-700']; @endphp
             @forelse ($visitors as $v)
             <tr class="border-b border-beige-100 last:border-0">
-                <td class="py-3 px-4 font-mono text-xs text-charcoal-600">{{ substr($v->visitor_id, 0, 8) }}</td>
+                <td class="py-3 px-4"><a href="{{ route('admin.visitors.show', $v->visitor_id) }}" class="font-mono text-xs text-maroon-700 hover:text-maroon-900 hover:underline font-semibold">{{ substr($v->visitor_id, 0, 8) }} &rarr;</a></td>
                 <td class="py-3 px-4"><span class="text-xs px-2 py-0.5 rounded-full {{ $devColors[$v->device] ?? 'bg-beige-100 text-charcoal-700' }}">{{ ucfirst($v->device ?? 'unknown') }}</span></td>
                 <td class="py-3 px-4 text-right tabular-nums text-charcoal-700">{{ number_format($v->pageviews) }}</td>
                 <td class="py-3 px-4 text-right tabular-nums font-semibold {{ $v->conversions > 0 ? 'text-gold-700' : 'text-charcoal-400' }}">{{ number_format($v->conversions) }}</td>

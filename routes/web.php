@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\LeadAdminController;
+use App\Http\Controllers\Admin\MaintenanceController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserAdminController;
@@ -76,6 +77,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/analytics/live', [AnalyticsController::class, 'live'])->middleware('role:media_buyer')->name('analytics.live');
     Route::get('/flow', [AnalyticsController::class, 'flow'])->middleware('role:media_buyer')->name('flow');
     Route::get('/visitors', [AnalyticsController::class, 'visitors'])->middleware('role:media_buyer')->name('visitors');
+    Route::get('/visitors/{visitor}', [AnalyticsController::class, 'visitorShow'])->middleware('role:media_buyer')->name('visitors.show');
 
     Route::get('/reports', [ReportController::class, 'index'])->middleware('role:media_buyer')->name('reports');
 
@@ -102,6 +104,9 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
         Route::post('/users', [UserAdminController::class, 'store'])->name('users.store');
         Route::patch('/users/{user}', [UserAdminController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserAdminController::class, 'destroy'])->name('users.destroy');
+
+        Route::get('/reset', [MaintenanceController::class, 'index'])->name('reset');
+        Route::post('/reset', [MaintenanceController::class, 'reset'])->name('reset.perform');
     });
 
     Route::middleware('role:sales_agent,media_buyer')->group(function () {

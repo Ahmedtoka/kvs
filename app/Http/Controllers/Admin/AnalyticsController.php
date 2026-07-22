@@ -271,6 +271,53 @@ class AnalyticsController extends Controller
         return view('admin.visitors', compact('visitors', 'totals', 'device'));
     }
 
+    /** Full journey for a single visitor: every action, in order, with dwell time. */
+    public function visitorShow(Request $request, string $visitor): View
+    {
+        $events = TrackingEvent::where('visitor_id', $visitor)->orderBy('id')->get();
+        abort_if($events->isEmpty(), 404);
+
+        $first = $events->first();
+        $last  = $events->last();
+        $pageviews   = $events->where('event', 'pageview');
+        $conversions = $events->where('event', 'conversion');
+
+        $device      = $events->pluck('device')->filter()->last() ?? 'unknown';
+        $utmSource   = $events->pluck('utm_source')->filter()->first();
+        $utmCampaign = $events->pluck('utm_campaign')->filter()->first();
+        $referrer    = $events->pluck('referrer')->filter()->first();
+
+        $summary = [
+            'total_events' => $events->count(),
+            'pageviews'    => $pageviews->count(),
+            'conversions'  => $conversions->count(),
+            'duration'     => (int) abs($first->created_at->diffInSeconds($last->created_at)),
+            'entry'        => optional($pageviews->first())->page,
+            'exit'         => optional($pageviews->last())->page,
+            'source'       => $utmSource ?: ($referrer ? 'Referral' : 'Direct'),
+            'campaign'     => $utmCampaign,
+        ];
+
+        // Timeline with dwell time (gap to next event); a gap > 30 min starts a new session.
+        $list = $events->values();
+        $timeline = [];
+        foreach ($list as $i => $e) {
+            $next = $list[$i + 1] ?? null;
+            $gap  = $next ? (int) abs($e->created_at->diffInSeconds($next->created_at)) : null;
+            $break = $gap !== null && $gap > 1800;
+            $timeline[] = [
+                'event'  => $e->event,
+                'page'   => $e->page,
+                'label'  => $e->label,
+                'at'     => $e->created_at,
+                'dwell'  => ($gap !== null && ! $break) ? $gap : null,
+                'break'  => $break,
+            ];
+        }
+
+        return view('admin.visitor-show', compact('visitor', 'device', 'summary', 'timeline', 'first', 'last'));
+    }
+
     private function deviceCount(string $device): int
     {
         return TrackingEvent::where('device', $device)->distinct('visitor_id')->count('visitor_id');
