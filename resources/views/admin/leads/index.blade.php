@@ -150,7 +150,7 @@
                     @endforeach
                     <li class="text-sm flex gap-3">
                         <span class="text-xs text-charcoal-500 whitespace-nowrap w-32 shrink-0">{{ $lead->created_at->format('d M Y, H:i') }}</span>
-                        <span class="text-charcoal-700"><span class="font-medium">Received:</span> New {{ \App\Models\Lead::TYPES[$lead->type] ?? $lead->type }} request@if ($lead->source) &middot; {{ $lead->source }}@endif</span>
+                        <span class="text-charcoal-700"><span class="font-medium">Received:</span> New {{ \App\Models\Lead::TYPES[$lead->type] ?? $lead->type }} request{{ $lead->source ? ' · '.$lead->source : '' }}</span>
                     </li>
                 </ul>
             </div>
