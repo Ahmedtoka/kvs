@@ -1,6 +1,6 @@
 {{-- Accreditations marquee — partner & accreditation logos in public/img/ --}}
 @php
-    $accLogos = ['/img/partner-1.jpg','/img/partner-2.jpg','/img/partner-3.jpg','/img/partner-4.jpg','/img/partner-5.jpg','/img/partner-6.jpg','/img/partner-7.jpg'];
+    $accLogos = ['/img/partner-1.jpg','/img/partner-2.jpg','/img/partner-3.jpg','/img/partner-4.jpg','/img/partner-5.jpg','/img/OxfordAQAMasterLogo.png','/img/partner-7.jpg'];
     $accNames = ['University of Cambridge', 'Pearson Edexcel', 'Oxford International AQA', 'British Council', 'Goethe-Institut', 'Institut Français'];
 @endphp
 

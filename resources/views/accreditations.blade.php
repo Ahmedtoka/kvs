@@ -24,36 +24,25 @@
             </p>
         </div>
 
-        {{-- Real accreditation & partner logos --}}
-        <div class="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 reveal">
-            @foreach (range(1, 7) as $n)
-            <div class="flex items-center justify-center h-24 sm:h-28 bg-white border border-beige-200 rounded-sm p-4 shadow-sm hover:shadow-md transition-shadow">
-                <img src="/img/partner-{{ $n }}.jpg" alt="KVS accreditation partner" class="max-h-full max-w-full object-contain" loading="lazy">
-            </div>
-            @endforeach
-        </div>
-
-        <div class="mt-14 grid md:grid-cols-2 gap-8">
+        <div class="mt-12 grid sm:grid-cols-2 gap-8">
             @php
                 $accreditations = [
-                    ['name' => 'University of Cambridge', 'type' => 'Academic Accreditation', 'desc' => 'Cambridge International qualifications and the Cambridge Learner Attributes framework — the world\'s most recognised British curriculum pathway.'],
-                    ['name' => 'Pearson Edexcel', 'type' => 'Academic Accreditation', 'desc' => 'An approved Pearson Edexcel centre, offering internationally examined qualifications through to International GCSE.'],
-                    ['name' => 'Oxford International AQA', 'type' => 'Academic Accreditation', 'desc' => 'Approved to deliver Oxford International AQA examinations — bringing the rigour of the UK\'s leading exam board to our students.'],
-                    ['name' => 'British Council', 'type' => 'Partnership', 'desc' => 'Partnership with the British Council — supporting international education standards and global learning programmes.'],
-                    ['name' => 'Goethe-Institut', 'type' => 'Language Partnership — German', 'desc' => 'Our German language programme is delivered in partnership with the Goethe-Institut, with internationally certified levels.'],
-                    ['name' => 'Institut Français d\'Égypte', 'type' => 'Language Partnership — French', 'desc' => 'French at KVS is certified through the Institut Français — official DELF-track learning from an early age.'],
+                    ['logo' => '/img/partner-2.jpg', 'name' => 'University of Cambridge', 'type' => 'Academic Accreditation', 'desc' => 'Cambridge International qualifications and the Cambridge Learner Attributes framework — the world\'s most recognised British curriculum pathway.'],
+                    ['logo' => '/img/partner-4.jpg', 'name' => 'Pearson Edexcel', 'type' => 'Academic Accreditation', 'desc' => 'An approved Pearson Edexcel centre, offering internationally examined qualifications through to International GCSE.'],
+                    ['logo' => '/img/OxfordAQAMasterLogo.png', 'name' => 'Oxford International AQA', 'type' => 'Academic Accreditation', 'desc' => 'Approved to deliver Oxford International AQA examinations — bringing the rigour of the UK\'s leading exam board to our students.'],
+                    ['logo' => '/img/partner-1.jpg', 'name' => 'British Council', 'type' => 'Partnership', 'desc' => 'Partnership with the British Council — supporting international education standards and global learning programmes.'],
+                    ['logo' => '/img/partner-3.jpg', 'name' => 'Goethe-Institut', 'type' => 'Language Partnership — German', 'desc' => 'Our German language programme is delivered in partnership with the Goethe-Institut, with internationally certified levels.'],
+                    ['logo' => '/img/partner-7.jpg', 'name' => 'Institut Français d\'Égypte', 'type' => 'Language Partnership — French', 'desc' => 'French at KVS is certified through the Institut Français — official DELF-track learning from an early age.'],
                 ];
             @endphp
             @foreach ($accreditations as $acc)
-            <article class="reveal bg-white border border-beige-200 rounded-sm p-8 hover:shadow-lg transition-shadow duration-300 flex gap-6">
-                <div class="shrink-0 w-14 h-14 rounded-sm bg-maroon-900 flex items-center justify-center">
-                    <svg class="w-7 h-7 text-gold-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>
+            <article class="reveal bg-white border border-beige-200 rounded-sm p-8 hover:shadow-lg transition-shadow duration-300">
+                <div class="h-16 flex items-center">
+                    <img src="{{ $acc['logo'] }}" alt="{{ $acc['name'] }} logo" class="max-h-16 max-w-[220px] object-contain" loading="lazy">
                 </div>
-                <div>
-                    <p class="text-xs font-semibold tracking-wider uppercase text-gold-700">{{ $acc['type'] }}</p>
-                    <h3 class="font-display text-xl font-semibold text-maroon-900 mt-1.5">{{ $acc['name'] }}</h3>
-                    <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">{{ $acc['desc'] }}</p>
-                </div>
+                <p class="text-xs font-semibold tracking-wider uppercase text-gold-700 mt-6">{{ $acc['type'] }}</p>
+                <h3 class="font-display text-xl font-semibold text-maroon-900 mt-1.5">{{ $acc['name'] }}</h3>
+                <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">{{ $acc['desc'] }}</p>
             </article>
             @endforeach
         </div>
