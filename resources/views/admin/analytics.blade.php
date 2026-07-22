@@ -1,37 +1,9 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Analytics — KVS Admin</title>
-    <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    @vite(['resources/css/app.css'])
-</head>
-<body class="min-h-screen bg-beige-100 text-charcoal-800">
+@extends('admin.layout')
+@section('title', 'Analytics')
 
-<header class="bg-maroon-950 text-ivory">
-    <div class="container-site flex items-center justify-between py-3.5">
-        <div class="flex items-center gap-3">
-            <img src="/img/logo-mark.png" alt="" class="h-10 w-auto">
-            <span class="leading-tight">
-                <span class="block font-display font-bold text-lg">KVS Admin</span>
-                <span class="block text-[11px] tracking-[0.2em] uppercase text-gold-400">Website Analytics</span>
-            </span>
-        </div>
-        <nav class="flex items-center gap-5 text-sm">
-            <a href="{{ route('admin.leads') }}" class="text-ivory/70 hover:text-gold-300 transition-colors">Leads</a>
-            <a href="{{ route('admin.analytics') }}" class="font-semibold text-gold-400">Analytics</a>
-            <a href="{{ route('home') }}" class="text-ivory/70 hover:text-gold-300 transition-colors">View website</a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="font-semibold text-gold-400 hover:text-gold-300 transition-colors cursor-pointer">Log out</button>
-            </form>
-        </nav>
-    </div>
-</header>
-
-<main class="container-site py-8 sm:py-10 space-y-8">
+@section('content')
+<h1 class="font-display text-2xl sm:text-3xl font-bold text-maroon-900 mb-6">Website Analytics</h1>
+<div class="space-y-8">
 
     {{-- ===== Headline cards ===== --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -174,7 +146,5 @@
         </section>
     </div>
 
-</main>
-
-</body>
-</html>
+</div>
+@endsection
