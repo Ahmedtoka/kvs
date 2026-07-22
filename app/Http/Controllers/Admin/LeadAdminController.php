@@ -4,19 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\LeadActivity;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LeadAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Lead::query()->latest();
+        $user = $request->user();
+        $query = Lead::query()->with(['assignedAgent', 'activities.user'])->latest();
+
+        if ($user->role === 'sales_agent') {
+            $query->where('assigned_to', $user->id);
+        }
 
         if ($request->filled('status') && array_key_exists($request->status, Lead::STATUSES)) {
             $query->where('status', $request->status);
         }
         if ($request->filled('type') && array_key_exists($request->type, Lead::TYPES)) {
             $query->where('type', $request->type);
+        }
+        if ($request->filled('agent') && $user->role !== 'sales_agent') {
+            $query->where('assigned_to', $request->agent === 'unassigned' ? null : (int) $request->agent);
         }
         if ($request->filled('q')) {
             $q = $request->q;
@@ -28,54 +38,87 @@ class LeadAdminController extends Controller
             });
         }
 
-        $leads = $query->paginate(20)->withQueryString();
+        $leads  = $query->paginate(20)->withQueryString();
+        $agents = User::whereIn('role', ['sales_agent', 'super_admin'])->where('is_active', true)->orderBy('name')->get();
 
-        return view('admin.leads.index', compact('leads'));
+        return view('admin.leads.index', compact('leads', 'agents'));
     }
 
     public function update(Request $request, Lead $lead)
     {
+        $user = $request->user();
+        if ($user->role === 'sales_agent' && (int) $lead->assigned_to !== (int) $user->id) {
+            abort(403);
+        }
+
         $data = $request->validate([
-            'status' => ['nullable', 'in:' . implode(',', array_keys(Lead::STATUSES))],
-            'notes'  => ['nullable', 'string', 'max:5000'],
+            'status'      => ['nullable', 'in:' . implode(',', array_keys(Lead::STATUSES))],
+            'notes'       => ['nullable', 'string', 'max:5000'],
+            'assigned_to' => ['nullable', 'exists:users,id'],
+            'feedback'    => ['nullable', 'string', 'max:2000'],
         ]);
 
-        $lead->update(array_filter([
-            'status' => $data['status'] ?? null,
-            'notes'  => $data['notes'] ?? null,
-        ], fn ($v) => ! is_null($v)));
+        if (! empty($data['status']) && $data['status'] !== $lead->status) {
+            LeadActivity::create(['lead_id' => $lead->id, 'user_id' => $user->id, 'type' => 'status',
+                'body' => 'Status changed to ' . (Lead::STATUSES[$data['status']] ?? $data['status'])]);
+            $lead->status = $data['status'];
+        }
+
+        if ($user->role !== 'sales_agent' && $request->has('assigned_to')) {
+            $newAgent = $data['assigned_to'] ?: null;
+            if ((int) $newAgent !== (int) $lead->assigned_to) {
+                $name = $newAgent ? optional(User::find($newAgent))->name : 'Unassigned';
+                LeadActivity::create(['lead_id' => $lead->id, 'user_id' => $user->id, 'type' => 'assign', 'body' => 'Assigned to ' . $name]);
+                $lead->assigned_to = $newAgent;
+            }
+        }
+
+        if ($request->has('notes')) {
+            $lead->notes = $data['notes'] ?? null;
+        }
+        $lead->save();
+
+        if (! empty($data['feedback'])) {
+            LeadActivity::create(['lead_id' => $lead->id, 'user_id' => $user->id, 'type' => 'note', 'body' => $data['feedback']]);
+        }
 
         return back()->with('success', "Lead #{$lead->id} updated.");
     }
 
-    public function destroy(Lead $lead)
+    public function destroy(Request $request, Lead $lead)
     {
+        if ($request->user()->role === 'sales_agent') {
+            abort(403);
+        }
         $lead->delete();
 
         return back()->with('success', 'Lead deleted.');
     }
 
-    public function export()
+    public function export(Request $request)
     {
+        $user = $request->user();
         $filename = 'kvs-leads-' . date('Y-m-d') . '.csv';
 
-        return response()->streamDownload(function () {
+        return response()->streamDownload(function () use ($user) {
             $out = fopen('php://output', 'w');
-            fputs($out, "\xEF\xBB\xBF"); // UTF-8 BOM for Excel
-            fputcsv($out, ['ID', 'Date', 'Type', 'Parent', 'Student', 'Phone', 'Email', 'Age', 'Stage', 'Year Group', 'Preferred Date', 'Status', 'Source', 'Message', 'Notes']);
-            \App\Models\Lead::latest()->chunk(200, function ($leads) use ($out) {
-                foreach ($leads as $l) {
-                    fputcsv($out, [
-                        $l->id, $l->created_at->format('Y-m-d H:i'),
-                        \App\Models\Lead::TYPES[$l->type] ?? $l->type,
-                        $l->parent_name, $l->student_name, $l->phone, $l->email,
-                        $l->child_age, $l->stage, $l->year_group,
-                        optional($l->preferred_date)->format('Y-m-d'),
-                        \App\Models\Lead::STATUSES[$l->status] ?? $l->status,
-                        $l->source, $l->message, $l->notes,
-                    ]);
-                }
-            });
+            fputs($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['ID', 'Date', 'Type', 'Parent', 'Student', 'Phone', 'Email', 'Age', 'Stage', 'Year Group', 'Preferred Date', 'Status', 'Assigned To', 'Source', 'Message', 'Notes']);
+            Lead::with('assignedAgent')->when($user->role === 'sales_agent', fn ($q) => $q->where('assigned_to', $user->id))
+                ->latest()->chunk(200, function ($leads) use ($out) {
+                    foreach ($leads as $l) {
+                        fputcsv($out, [
+                            $l->id, $l->created_at->format('Y-m-d H:i'),
+                            Lead::TYPES[$l->type] ?? $l->type,
+                            $l->parent_name, $l->student_name, $l->phone, $l->email,
+                            $l->child_age, $l->stage, $l->year_group,
+                            optional($l->preferred_date)->format('Y-m-d'),
+                            Lead::STATUSES[$l->status] ?? $l->status,
+                            optional($l->assignedAgent)->name,
+                            $l->source, $l->message, $l->notes,
+                        ]);
+                    }
+                });
             fclose($out);
         }, $filename, ['Content-Type' => 'text/csv']);
     }

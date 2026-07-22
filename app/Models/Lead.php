@@ -8,7 +8,7 @@ class Lead extends Model
 {
     protected $fillable = [
         'type', 'parent_name', 'student_name', 'phone', 'email', 'child_age',
-        'stage', 'year_group', 'preferred_date', 'message', 'status', 'source', 'notes',
+        'stage', 'year_group', 'preferred_date', 'message', 'status', 'source', 'notes', 'assigned_to',
     ];
 
     protected $casts = [
@@ -30,4 +30,14 @@ class Lead extends Model
         'tour'     => 'School Tour',
         'fees'     => 'Fees Request',
     ];
+
+    public function assignedAgent()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(LeadActivity::class)->latest();
+    }
 }

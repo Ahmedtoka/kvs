@@ -24,6 +24,15 @@
             </p>
         </div>
 
+        {{-- Real accreditation & partner logos --}}
+        <div class="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 reveal">
+            @foreach (range(1, 7) as $n)
+            <div class="flex items-center justify-center h-24 sm:h-28 bg-white border border-beige-200 rounded-sm p-4 shadow-sm hover:shadow-md transition-shadow">
+                <img src="/img/partner-{{ $n }}.jpg" alt="KVS accreditation partner" class="max-h-full max-w-full object-contain" loading="lazy">
+            </div>
+            @endforeach
+        </div>
+
         <div class="mt-14 grid md:grid-cols-2 gap-8">
             @php
                 $accreditations = [
