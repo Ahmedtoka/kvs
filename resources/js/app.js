@@ -96,12 +96,15 @@ if ('IntersectionObserver' in window && counters.length) {
     // WhatsApp + phone taps
     document.querySelectorAll('a[href^="https://wa.me"], a[href^="tel:"]').forEach(function (el) {
         el.addEventListener('click', function () {
-            track(el.getAttribute('href').indexOf('tel:') === 0 ? 'call_click' : 'whatsapp_click', el.getAttribute('href'));
+            var isCall = el.getAttribute('href').indexOf('tel:') === 0;
+            var label = el.getAttribute('data-label') || el.getAttribute('href');
+            track(isCall ? 'call_click' : 'whatsapp_click', label);
         });
     });
 
     // Header navigation usage
     document.querySelectorAll('#site-header a[href^="/"]').forEach(function (el) {
+        if (el.hasAttribute('data-track')) return; // counted as cta_click instead
         el.addEventListener('click', function () { track('nav_click', el.getAttribute('href')); });
     });
 

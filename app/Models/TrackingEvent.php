@@ -28,4 +28,22 @@ class TrackingEvent extends Model
         'scroll_75',        // reached 75% of the page
         'nav_click',        // main navigation click
     ];
+
+    /**
+     * Classify a User-Agent string into desktop | mobile | tablet.
+     */
+    public static function deviceFrom(?string $ua): string
+    {
+        $ua = (string) $ua;
+
+        if (preg_match('/iPad|Tablet|PlayBook|Silk|Kindle/i', $ua) || preg_match('/Android(?!.*Mobile)/i', $ua)) {
+            return 'tablet';
+        }
+
+        if (preg_match('/Mobile|Android|iPhone|iPod|BlackBerry|Opera Mini|IEMobile/i', $ua)) {
+            return 'mobile';
+        }
+
+        return 'desktop';
+    }
 }

@@ -125,7 +125,7 @@ class LeadController extends Controller
                 'utm_source'   => $firstTouch->utm_source ?? null,
                 'utm_medium'   => $firstTouch->utm_medium ?? null,
                 'utm_campaign' => $firstTouch->utm_campaign ?? null,
-                'device'       => preg_match('/Mobile|Android|iPhone/i', (string) $request->userAgent()) ? 'mobile' : 'desktop',
+                'device'       => \App\Models\TrackingEvent::deviceFrom($request->userAgent()),
             ]);
         } catch (\Throwable $e) {
             report($e);

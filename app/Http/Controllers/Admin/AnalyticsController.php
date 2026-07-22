@@ -85,10 +85,15 @@ class AnalyticsController extends Controller
             ->where('event', 'pageview')->where('created_at', '>=', $month)
             ->groupBy('source')->orderByDesc('visitors')->limit(8)->get();
 
+        // ---- Visitors by device (30d) ----
+        $devices = TrackingEvent::select('device', DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
+            ->where('event', 'pageview')->where('created_at', '>=', $month)
+            ->whereNotNull('device')->groupBy('device')->orderByDesc('visitors')->get();
+
         // ---- Live visitors (active in the last 5 minutes) ----
         $live = $this->liveData();
 
-        return view('admin.analytics', compact('cards', 'funnel', 'funnelMax', 'topPages', 'interactions', 'days', 'dailyMax', 'sources', 'live'));
+        return view('admin.analytics', compact('cards', 'funnel', 'funnelMax', 'topPages', 'interactions', 'days', 'dailyMax', 'sources', 'devices', 'live'));
     }
 
     /**
@@ -206,11 +211,26 @@ class AnalyticsController extends Controller
             ->whereNotNull('utm_campaign')->where('utm_campaign', '!=', '')
             ->groupBy('source', 'campaign')->orderByDesc('conversions')->limit(15)->get();
 
+        // ---- Device split (visitors + conversions) ----
+        $deviceVisitors = DB::table('tracking_events')
+            ->select('device', DB::raw('COUNT(DISTINCT visitor_id) as v'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)->whereNotNull('device')
+            ->groupBy('device')->pluck('v', 'device');
+        $deviceConversions = DB::table('tracking_events')
+            ->select('device', DB::raw('COUNT(*) as c'))
+            ->where('event', 'conversion')->whereBetween('created_at', $between)->whereNotNull('device')
+            ->groupBy('device')->pluck('c', 'device');
+        $deviceSplit = collect(['mobile', 'desktop', 'tablet'])->map(fn ($d) => [
+            'device'      => $d,
+            'visitors'    => (int) ($deviceVisitors[$d] ?? 0),
+            'conversions' => (int) ($deviceConversions[$d] ?? 0),
+        ])->filter(fn ($r) => $r['visitors'] > 0 || $r['conversions'] > 0)->values();
+
         $typeLabels = Lead::TYPES + ['career' => 'Career Application'];
 
         return view('admin.flow', compact(
             'from', 'to', 'kpis', 'entryPages', 'exitPages',
-            'topPaths', 'pathsCapped', 'convByType', 'adsPerformance', 'campaigns', 'typeLabels'
+            'topPaths', 'pathsCapped', 'convByType', 'adsPerformance', 'campaigns', 'deviceSplit', 'typeLabels'
         ));
     }
 

@@ -195,5 +195,34 @@
         </section>
     </div>
 
+    {{-- ===== Visitors by device ===== --}}
+    <section class="bg-white rounded-sm border border-beige-200 shadow-sm p-7">
+        <h2 class="font-display text-xl font-semibold text-maroon-900">Visitors by Device <span class="text-sm font-sans font-normal text-charcoal-600">— 30 days</span></h2>
+        @php
+            $devTotal = max(1, $devices->sum('visitors'));
+            $devMeta = [
+                'mobile'  => ['Mobile', 'bg-maroon-700'],
+                'desktop' => ['Desktop', 'bg-gold-500'],
+                'tablet'  => ['Tablet', 'bg-charcoal-400'],
+            ];
+        @endphp
+        <div class="mt-5 grid sm:grid-cols-3 gap-4">
+            @forelse ($devices as $d)
+            @php [$dLabel, $dColor] = $devMeta[$d->device] ?? [ucfirst($d->device), 'bg-beige-400']; @endphp
+            <div class="rounded-sm border border-beige-200 p-5">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full {{ $dColor }}"></span>
+                    <span class="text-sm font-medium text-charcoal-700">{{ $dLabel }}</span>
+                </div>
+                <p class="mt-2 font-display text-3xl font-bold text-maroon-900 tabular-nums">{{ number_format($d->visitors) }}</p>
+                <p class="text-xs text-charcoal-600">{{ round($d->visitors / $devTotal * 100) }}% of visitors</p>
+                <div class="mt-3 h-2 bg-beige-100 rounded-full overflow-hidden"><div class="h-full {{ $dColor }}" style="width: {{ max(3, round($d->visitors / $devTotal * 100)) }}%"></div></div>
+            </div>
+            @empty
+            <p class="py-6 text-center text-sm text-charcoal-600 sm:col-span-3">No device data recorded yet.</p>
+            @endforelse
+        </div>
+    </section>
+
 </div>
 @endsection

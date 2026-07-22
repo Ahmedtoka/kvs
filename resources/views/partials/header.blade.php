@@ -58,7 +58,7 @@
         </nav>
 
         <div class="flex items-center gap-3">
-            <a href="/book-a-tour" class="btn-gold !px-5 !py-2.5 !text-[13px] hidden sm:inline-flex">Book a Tour</a>
+            <a href="/book-a-tour" data-track="Header &middot; Book a Tour" class="btn-gold !px-5 !py-2.5 !text-[13px] hidden sm:inline-flex">Book a Tour</a>
             <button id="mobile-menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" class="lg:hidden p-2 -mr-2 text-maroon-900 cursor-pointer">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"/></svg>
             </button>
@@ -78,7 +78,7 @@
                 </div>
             </div>
             @endforeach
-            <a href="/book-a-tour" class="btn-gold w-full mt-4">Book a School Tour</a>
+            <a href="/book-a-tour" data-track="Mobile menu &middot; Book a Tour" class="btn-gold w-full mt-4">Book a School Tour</a>
         </nav>
     </div>
 </header>

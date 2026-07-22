@@ -143,6 +143,37 @@
     </div>
 </div>
 
+{{-- By device --}}
+<div class="mt-6 bg-white rounded-sm shadow-sm border border-beige-200 p-6">
+    <h2 class="font-display text-lg font-bold text-maroon-900">By device</h2>
+    <p class="text-sm text-charcoal-600 mt-1">Mobile vs desktop vs tablet — visitors and how many converted.</p>
+    @php $devMeta = ['mobile' => ['Mobile', 'bg-maroon-700'], 'desktop' => ['Desktop', 'bg-gold-500'], 'tablet' => ['Tablet', 'bg-charcoal-400']]; @endphp
+    <div class="mt-4 grid sm:grid-cols-3 gap-4">
+        @forelse ($deviceSplit as $d)
+        @php [$dLabel, $dColor] = $devMeta[$d['device']] ?? [ucfirst($d['device']), 'bg-beige-400']; @endphp
+        <div class="rounded-sm border border-beige-200 p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="w-2.5 h-2.5 rounded-full {{ $dColor }}"></span>
+                <span class="text-sm font-medium text-charcoal-700">{{ $dLabel }}</span>
+            </div>
+            <div class="flex items-end justify-between gap-3">
+                <div>
+                    <p class="font-display text-2xl font-bold text-maroon-900 tabular-nums">{{ number_format($d['visitors']) }}</p>
+                    <p class="text-xs text-charcoal-600">visitors</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-display text-2xl font-bold text-gold-700 tabular-nums">{{ number_format($d['conversions']) }}</p>
+                    <p class="text-xs text-charcoal-600">conversions</p>
+                </div>
+            </div>
+            <p class="mt-2 text-xs text-charcoal-500">Conv. rate: {{ $d['visitors'] > 0 ? round($d['conversions'] / $d['visitors'] * 100, 1) : 0 }}%</p>
+        </div>
+        @empty
+        <p class="py-6 text-center text-sm text-charcoal-600 sm:col-span-3">No device data in this range yet.</p>
+        @endforelse
+    </div>
+</div>
+
 {{-- Top journeys --}}
 <div class="mt-6 bg-white rounded-sm shadow-sm border border-beige-200 p-6">
     <h2 class="font-display text-lg font-bold text-maroon-900">Top journeys</h2>

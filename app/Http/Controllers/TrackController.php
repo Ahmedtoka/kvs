@@ -31,7 +31,7 @@ class TrackController extends Controller
                 'event'      => $validated['event'],
                 'page'       => $validated['page'],
                 'label'      => $validated['label'] ?? null,
-                'device'     => preg_match('/Mobile|Android|iPhone/i', (string) $request->userAgent()) ? 'mobile' : 'desktop',
+                'device'     => TrackingEvent::deviceFrom($request->userAgent()),
             ]);
         } catch (\Throwable $e) {
             report($e);

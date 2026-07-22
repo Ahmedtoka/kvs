@@ -56,7 +56,7 @@
     </script>
     @endif
 </head>
-<body class="pb-16 sm:pb-0">
+<body class="pb-16 lg:pb-0">
 
 <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:bg-gold-500 focus:text-maroon-950 focus:px-4 focus:py-2">Skip to main content</a>
 

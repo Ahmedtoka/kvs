@@ -38,11 +38,11 @@
             and global perspectives to prepare confident, compassionate, and future-ready learners.
         </p>
         <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#book-tour" class="btn-gold w-full sm:w-auto">
+            <a href="#book-tour" data-track="Hero &middot; Book a Tour" class="btn-gold w-full sm:w-auto">
                 Book a School Tour
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/></svg>
             </a>
-            <a href="#admissions" class="btn-outline-ivory w-full sm:w-auto">Explore Admissions</a>
+            <a href="#admissions" data-track="Hero &middot; Explore Admissions" class="btn-outline-ivory w-full sm:w-auto">Explore Admissions</a>
         </div>
     </div>
 
