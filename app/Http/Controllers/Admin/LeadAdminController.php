@@ -38,6 +38,13 @@ class LeadAdminController extends Controller
             });
         }
 
+        if ($request->filled('from')) {
+            $query->whereDate('created_at', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->whereDate('created_at', '<=', $request->to);
+        }
+
         $leads  = $query->paginate(20)->withQueryString();
         $agents = User::whereIn('role', ['sales_agent', 'super_admin'])->where('is_active', true)->orderBy('name')->get();
 

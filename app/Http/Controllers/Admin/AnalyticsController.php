@@ -83,6 +83,27 @@ class AnalyticsController extends Controller
             ->where('event', 'pageview')->where('created_at', '>=', $month)
             ->groupBy('source')->orderByDesc('visitors')->limit(8)->get();
 
-        return view('admin.analytics', compact('cards', 'funnel', 'funnelMax', 'topPages', 'interactions', 'days', 'dailyMax', 'sources'));
+        // ---- Live visitors (active in the last 5 minutes) ----
+        $live = $this->liveData();
+
+        return view('admin.analytics', compact('cards', 'funnel', 'funnelMax', 'topPages', 'interactions', 'days', 'dailyMax', 'sources', 'live'));
+    }
+
+    /** JSON endpoint polled by the dashboard for real-time visitor counts. */
+    public function live(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json($this->liveData());
+    }
+
+    private function liveData(): array
+    {
+        $window = now()->subMinutes(5);
+
+        return [
+            'count' => TrackingEvent::where('created_at', '>=', $window)->distinct('visitor_id')->count('visitor_id'),
+            'pages' => TrackingEvent::select('page', DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
+                ->where('event', 'pageview')->where('created_at', '>=', $window)
+                ->groupBy('page')->orderByDesc('visitors')->limit(10)->get(),
+        ];
     }
 }

@@ -3,6 +3,45 @@
 
 @section('content')
 <h1 class="font-display text-2xl sm:text-3xl font-bold text-maroon-900 mb-6">Website Analytics</h1>
+
+<div class="mb-8 bg-maroon-950 text-ivory rounded-sm p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+    <div class="flex items-center gap-3 shrink-0">
+        <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#22c55e"></span><span class="relative inline-flex rounded-full h-3 w-3" style="background:#22c55e"></span></span>
+        <div>
+            <p class="text-4xl font-display font-bold text-gold-400" id="live-count">{{ $live['count'] }}</p>
+            <p class="text-xs text-ivory/70 uppercase tracking-wide">On site right now</p>
+        </div>
+    </div>
+    <div class="grow w-full">
+        <p class="text-xs text-ivory/60 uppercase tracking-wide mb-2">Active pages (last 5 min)</p>
+        <ul id="live-pages" class="text-sm space-y-1 max-h-28 overflow-y-auto pr-2">
+            @forelse ($live['pages'] as $lp)
+            <li class="flex justify-between gap-4"><span class="truncate text-ivory/85">{{ $lp->page }}</span><span class="text-gold-300 font-semibold">{{ $lp->visitors }}</span></li>
+            @empty
+            <li class="text-ivory/50">No visitors active right now.</li>
+            @endforelse
+        </ul>
+    </div>
+</div>
+<script>
+    (function () {
+        var url = '{{ route('admin.analytics.live') }}';
+        function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+        function refresh() {
+            fetch(url, { headers: { 'Accept': 'application/json' } })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var c = document.getElementById('live-count'); if (c) c.textContent = d.count;
+                    var u = document.getElementById('live-pages'); if (!u) return;
+                    if (!d.pages || !d.pages.length) { u.innerHTML = '<li class="text-ivory/50">No visitors active right now.</li>'; return; }
+                    u.innerHTML = d.pages.map(function (p) {
+                        return '<li class="flex justify-between gap-4"><span class="truncate text-ivory/85">' + esc(p.page) + '</span><span class="text-gold-300 font-semibold">' + p.visitors + '</span></li>';
+                    }).join('');
+                }).catch(function () {});
+        }
+        setInterval(refresh, 15000);
+    })();
+</script>
 <div class="space-y-8">
 
     {{-- ===== Headline cards ===== --}}

@@ -43,13 +43,21 @@
         </select>
     </div>
     @endif
+    <div>
+        <label for="f-from" class="block text-xs font-medium text-charcoal-600 mb-1">From</label>
+        <input id="f-from" type="date" name="from" value="{{ request('from') }}" class="h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
+    </div>
+    <div>
+        <label for="f-to" class="block text-xs font-medium text-charcoal-600 mb-1">To</label>
+        <input id="f-to" type="date" name="to" value="{{ request('to') }}" class="h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
+    </div>
     <div class="grow min-w-40">
         <label for="f-q" class="block text-xs font-medium text-charcoal-600 mb-1">Search</label>
         <input id="f-q" type="text" name="q" value="{{ request('q') }}" placeholder="Name, phone or email…"
                class="w-full h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
     </div>
     <button type="submit" class="btn-gold !py-2.5 !px-5 !text-xs">Filter</button>
-    @if (request()->hasAny(['status', 'type', 'q']))
+    @if (request()->hasAny(['status', 'type', 'q', 'agent', 'from', 'to']))
     <a href="{{ route('admin.leads.index') }}" class="text-sm text-charcoal-600 hover:text-maroon-700 py-2.5">Reset</a>
     @endif
 </form>
@@ -131,19 +139,21 @@
                 @csrf
                 @method('DELETE')
             </form>
-            @if ($lead->activities->isNotEmpty())
             <div class="lg:col-span-2 border-t border-beige-100 pt-4">
-                <p class="text-xs font-semibold text-charcoal-600 mb-2 uppercase tracking-wide">Activity log</p>
+                <p class="text-xs font-semibold text-charcoal-600 mb-2 uppercase tracking-wide">Lead history</p>
                 <ul class="space-y-2">
                     @foreach ($lead->activities as $act)
                     <li class="text-sm flex gap-3">
-                        <span class="text-xs text-charcoal-500 whitespace-nowrap w-28 shrink-0">{{ $act->created_at->format('d M, H:i') }}</span>
+                        <span class="text-xs text-charcoal-500 whitespace-nowrap w-32 shrink-0">{{ $act->created_at->format('d M Y, H:i') }}</span>
                         <span class="text-charcoal-700"><span class="font-medium">{{ optional($act->user)->name ?? 'System' }}:</span> {{ $act->body }}</span>
                     </li>
                     @endforeach
+                    <li class="text-sm flex gap-3">
+                        <span class="text-xs text-charcoal-500 whitespace-nowrap w-32 shrink-0">{{ $lead->created_at->format('d M Y, H:i') }}</span>
+                        <span class="text-charcoal-700"><span class="font-medium">Received:</span> New {{ \App\Models\Lead::TYPES[$lead->type] ?? $lead->type }} request@if ($lead->source) &middot; {{ $lead->source }}@endif</span>
+                    </li>
                 </ul>
             </div>
-            @endif
         </div>
     </details>
     @empty

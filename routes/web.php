@@ -68,6 +68,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('role:media_buyer')->name('analytics');
+    Route::get('/analytics/live', [AnalyticsController::class, 'live'])->middleware('role:media_buyer')->name('analytics.live');
 
     Route::get('/reports', [ReportController::class, 'index'])->middleware('role:media_buyer')->name('reports');
 
