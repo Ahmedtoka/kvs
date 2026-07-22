@@ -6,6 +6,57 @@
 <h1 class="font-display text-2xl sm:text-3xl font-bold text-maroon-900">Dashboard</h1>
 <p class="text-sm text-charcoal-600 mt-1">Admissions overview — updated live.</p>
 
+{{-- ===== Live now (real-time visitors) ===== --}}
+<div class="mt-6 bg-white rounded-sm shadow-sm border border-beige-200 overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-3.5 bg-maroon-950">
+        <div class="flex items-center gap-2.5">
+            <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#22c55e"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background:#22c55e"></span></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-ivory/85">Live now</span>
+        </div>
+        <span class="text-[11px] text-ivory/45 uppercase tracking-wide">Active in the last 5 minutes</span>
+    </div>
+    <div class="grid sm:grid-cols-[minmax(0,10rem)_1fr] gap-6 p-6">
+        <div class="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-1 sm:pr-6 sm:border-r border-beige-200">
+            <p class="font-display text-5xl font-bold text-maroon-900 tabular-nums leading-none" id="live-count">{{ $live['count'] }}</p>
+            <p class="text-xs text-charcoal-600 uppercase tracking-wide">On site right now</p>
+        </div>
+        <div class="min-w-0">
+            <p class="text-xs text-charcoal-600 uppercase tracking-wide mb-3">Active pages</p>
+            <ul id="live-pages" class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                @forelse ($live['pages'] as $lp)
+                <li class="flex items-center justify-between gap-3 px-3 py-2 rounded-sm bg-ivory border border-beige-100">
+                    <span class="truncate text-sm text-charcoal-800 font-medium">{{ $lp->page }}</span>
+                    <span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-maroon-800"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>{{ $lp->visitors }}</span>
+                </li>
+                @empty
+                <li class="px-3 py-2 text-sm text-charcoal-500">No visitors active right now.</li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+</div>
+@if (auth()->user()->hasRole('media_buyer'))
+<script>
+    (function () {
+        var url = '{{ route('admin.analytics.live') }}';
+        function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+        function refresh() {
+            fetch(url, { headers: { 'Accept': 'application/json' } })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var c = document.getElementById('live-count'); if (c) c.textContent = d.count;
+                    var u = document.getElementById('live-pages'); if (!u) return;
+                    if (!d.pages || !d.pages.length) { u.innerHTML = '<li class="px-3 py-2 text-sm text-charcoal-500">No visitors active right now.</li>'; return; }
+                    u.innerHTML = d.pages.map(function (p) {
+                        return '<li class="flex items-center justify-between gap-3 px-3 py-2 rounded-sm bg-ivory border border-beige-100"><span class="truncate text-sm text-charcoal-800 font-medium">' + esc(p.page) + '</span><span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-maroon-800"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>' + p.visitors + '</span></li>';
+                    }).join('');
+                }).catch(function () {});
+        }
+        setInterval(refresh, 15000);
+    })();
+</script>
+@endif
+
 {{-- Stats --}}
 <div class="mt-7 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
     @php

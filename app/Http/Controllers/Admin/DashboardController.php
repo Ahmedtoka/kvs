@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CareerApplication;
 use App\Models\Lead;
+use App\Models\TrackingEvent;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -22,6 +24,15 @@ class DashboardController extends Controller
         $byStatus = Lead::selectRaw('status, count(*) as c')->groupBy('status')->pluck('c', 'status');
         $recent = Lead::latest()->limit(10)->get();
 
-        return view('admin.dashboard', compact('stats', 'byStatus', 'recent'));
+        // Live visitors (active in the last 5 minutes)
+        $liveWindow = now()->subMinutes(5);
+        $live = [
+            'count' => TrackingEvent::where('created_at', '>=', $liveWindow)->distinct('visitor_id')->count('visitor_id'),
+            'pages' => TrackingEvent::select('page', DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
+                ->where('event', 'pageview')->where('created_at', '>=', $liveWindow)
+                ->groupBy('page')->orderByDesc('visitors')->limit(8)->get(),
+        ];
+
+        return view('admin.dashboard', compact('stats', 'byStatus', 'recent', 'live'));
     }
 }

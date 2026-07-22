@@ -4,23 +4,33 @@
 @section('content')
 <h1 class="font-display text-2xl sm:text-3xl font-bold text-maroon-900 mb-6">Website Analytics</h1>
 
-<div class="mb-8 bg-maroon-950 text-ivory rounded-sm p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-    <div class="flex items-center gap-3 shrink-0">
-        <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#22c55e"></span><span class="relative inline-flex rounded-full h-3 w-3" style="background:#22c55e"></span></span>
-        <div>
-            <p class="text-4xl font-display font-bold text-gold-400" id="live-count">{{ $live['count'] }}</p>
-            <p class="text-xs text-ivory/70 uppercase tracking-wide">On site right now</p>
+{{-- ===== Live now (real-time) ===== --}}
+<div class="mb-8 bg-white rounded-sm shadow-sm border border-beige-200 overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-3.5 bg-maroon-950">
+        <div class="flex items-center gap-2.5">
+            <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background:#22c55e"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background:#22c55e"></span></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-ivory/85">Live now</span>
         </div>
+        <span class="text-[11px] text-ivory/45 uppercase tracking-wide">Updates every 15s</span>
     </div>
-    <div class="grow w-full">
-        <p class="text-xs text-ivory/60 uppercase tracking-wide mb-2">Active pages (last 5 min)</p>
-        <ul id="live-pages" class="text-sm space-y-1 max-h-28 overflow-y-auto pr-2">
-            @forelse ($live['pages'] as $lp)
-            <li class="flex justify-between gap-4"><span class="truncate text-ivory/85">{{ $lp->page }}</span><span class="text-gold-300 font-semibold">{{ $lp->visitors }}</span></li>
-            @empty
-            <li class="text-ivory/50">No visitors active right now.</li>
-            @endforelse
-        </ul>
+    <div class="grid sm:grid-cols-[minmax(0,10rem)_1fr] gap-6 p-6">
+        <div class="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-1 sm:pr-6 sm:border-r border-beige-200">
+            <p class="font-display text-5xl font-bold text-maroon-900 tabular-nums leading-none" id="live-count">{{ $live['count'] }}</p>
+            <p class="text-xs text-charcoal-600 uppercase tracking-wide">Visitors on site now</p>
+        </div>
+        <div class="min-w-0">
+            <p class="text-xs text-charcoal-600 uppercase tracking-wide mb-3">Active pages (last 5 min)</p>
+            <ul id="live-pages" class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                @forelse ($live['pages'] as $lp)
+                <li class="flex items-center justify-between gap-3 px-3 py-2 rounded-sm bg-ivory border border-beige-100">
+                    <span class="truncate text-sm text-charcoal-800 font-medium">{{ $lp->page }}</span>
+                    <span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-maroon-800"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>{{ $lp->visitors }}</span>
+                </li>
+                @empty
+                <li class="px-3 py-2 text-sm text-charcoal-500">No visitors active right now.</li>
+                @endforelse
+            </ul>
+        </div>
     </div>
 </div>
 <script>
@@ -33,9 +43,9 @@
                 .then(function (d) {
                     var c = document.getElementById('live-count'); if (c) c.textContent = d.count;
                     var u = document.getElementById('live-pages'); if (!u) return;
-                    if (!d.pages || !d.pages.length) { u.innerHTML = '<li class="text-ivory/50">No visitors active right now.</li>'; return; }
+                    if (!d.pages || !d.pages.length) { u.innerHTML = '<li class="px-3 py-2 text-sm text-charcoal-500">No visitors active right now.</li>'; return; }
                     u.innerHTML = d.pages.map(function (p) {
-                        return '<li class="flex justify-between gap-4"><span class="truncate text-ivory/85">' + esc(p.page) + '</span><span class="text-gold-300 font-semibold">' + p.visitors + '</span></li>';
+                        return '<li class="flex items-center justify-between gap-3 px-3 py-2 rounded-sm bg-ivory border border-beige-100"><span class="truncate text-sm text-charcoal-800 font-medium">' + esc(p.page) + '</span><span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-semibold text-maroon-800"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>' + p.visitors + '</span></li>';
                     }).join('');
                 }).catch(function () {});
         }
