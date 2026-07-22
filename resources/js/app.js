@@ -65,3 +65,62 @@ if ('IntersectionObserver' in window && counters.length) {
     );
     counters.forEach((el) => io2.observe(el));
 }
+
+
+// 4) First-party analytics — send behaviour events to /track
+(function () {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    var csrf = meta ? meta.content : '';
+    var page = window.location.pathname || '/';
+
+    function track(event, label) {
+        var body = JSON.stringify({ event: event, page: page, label: label || null });
+        try {
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon('/track', new Blob([body], { type: 'application/json' }));
+            } else {
+                fetch('/track', {
+                    method: 'POST', keepalive: true,
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf },
+                    body: body,
+                });
+            }
+        } catch (e) { /* tracking must never break the page */ }
+    }
+
+    // CTA buttons explicitly tagged with data-track
+    document.querySelectorAll('[data-track]').forEach(function (el) {
+        el.addEventListener('click', function () { track('cta_click', el.getAttribute('data-track')); });
+    });
+
+    // WhatsApp + phone taps
+    document.querySelectorAll('a[href^="https://wa.me"], a[href^="tel:"]').forEach(function (el) {
+        el.addEventListener('click', function () {
+            track(el.getAttribute('href').indexOf('tel:') === 0 ? 'call_click' : 'whatsapp_click', el.getAttribute('href'));
+        });
+    });
+
+    // Header navigation usage
+    document.querySelectorAll('#site-header a[href^="/"]').forEach(function (el) {
+        el.addEventListener('click', function () { track('nav_click', el.getAttribute('href')); });
+    });
+
+    // Lead form scrolled into view (funnel step)
+    var form = document.querySelector('form[action*="/leads"], #lead-form');
+    if (form && 'IntersectionObserver' in window) {
+        var seen = false;
+        var fo = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) { if (e.isIntersecting && !seen) { seen = true; track('form_view'); fo.disconnect(); } });
+        }, { threshold: 0.4 });
+        fo.observe(form);
+        form.addEventListener('submit', function () { track('form_submit'); });
+    }
+
+    // Reached 75% of the page
+    var deep = false;
+    window.addEventListener('scroll', function () {
+        if (deep) return;
+        var h = document.documentElement;
+        if ((h.scrollTop + window.innerHeight) / h.scrollHeight >= 0.75) { deep = true; track('scroll_75'); }
+    }, { passive: true });
+})();

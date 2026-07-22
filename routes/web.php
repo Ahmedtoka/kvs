@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CareerAdminController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LeadAdminController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\TrackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +42,9 @@ Route::view('/services', 'services')->name('services');
 Route::view('/contact', 'contact')->name('contact');
 Route::view('/careers', 'careers')->name('careers');
 
+// First-party analytics beacon (JS sendBeacon)
+Route::post('/track', [TrackController::class, 'store'])->middleware('throttle:120,1')->name('track');
+
 // Public form submissions (rate-limited)
 Route::middleware('throttle:15,1')->group(function () {
     Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
@@ -57,6 +62,8 @@ Route::post('/admin/login', [AuthController::class, 'login'])->middleware('throt
 
 Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('role:media_buyer')->name('analytics');
 
     Route::get('/leads', [LeadAdminController::class, 'index'])->name('leads.index');
     Route::get('/leads/export', [LeadAdminController::class, 'export'])->name('leads.export');
