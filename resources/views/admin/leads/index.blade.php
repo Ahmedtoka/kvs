@@ -42,6 +42,7 @@
             @endforeach
         </select>
     </div>
+    @endif
     <div class="grow min-w-40">
         <label for="f-q" class="block text-xs font-medium text-charcoal-600 mb-1">Search</label>
         <input id="f-q" type="text" name="q" value="{{ request('q') }}" placeholder="Name, phone or email…"
