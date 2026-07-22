@@ -14,7 +14,7 @@
 <section class="py-20 sm:py-24 bg-ivory">
     <div class="container-site max-w-3xl">
         @php
-            $faqs = [
+            $faqsFallback = [
                 ['q' => 'What curriculum does KVS follow?',
                  'a' => 'KVS is a British curriculum school. Early Years follow the EYFS framework, Primary follows the National Curriculum of England (Key Stages 1–2), and Secondary leads to IGCSE examinations with Cambridge International, Pearson Edexcel and Oxford International AQA.'],
                 ['q' => 'From what age can my child join?',
@@ -36,6 +36,11 @@
                 ['q' => 'How can I see the school before deciding?',
                  'a' => 'Book a personal school tour — it takes under a minute on the Book a Tour page, and our team confirms your slot within 24 hours.'],
             ];
+            $faqs = rescue(fn () => \App\Models\ContentItem::where('group', 'faq')->where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
+                ->map(fn ($i) => ['q' => $i->title, 'a' => $i->body])->all(), []);
+            if (! count($faqs)) {
+                $faqs = $faqsFallback;
+            }
         @endphp
         <div class="space-y-4">
             @foreach ($faqs as $faq)

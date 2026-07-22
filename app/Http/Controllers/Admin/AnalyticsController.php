@@ -234,6 +234,48 @@ class AnalyticsController extends Controller
         ));
     }
 
+    /**
+     * Per-visitor device report — one row per anonymous visitor (device),
+     * so the media buyer can see visitors one by one.
+     */
+    public function visitors(Request $request): View
+    {
+        $device = $request->input('device');
+
+        $query = DB::table('tracking_events')
+            ->select(
+                'visitor_id',
+                DB::raw('MAX(device) as device'),
+                DB::raw("SUM(event = 'pageview') as pageviews"),
+                DB::raw("SUM(event = 'conversion') as conversions"),
+                DB::raw("MAX(NULLIF(utm_source, '')) as utm_source"),
+                DB::raw("MAX(NULLIF(referrer, '')) as referrer"),
+                DB::raw('MIN(created_at) as first_seen'),
+                DB::raw('MAX(created_at) as last_seen'))
+            ->groupBy('visitor_id')
+            ->orderByRaw('MAX(created_at) DESC');
+
+        if (in_array($device, ['mobile', 'desktop', 'tablet'], true)) {
+            $query->havingRaw('MAX(device) = ?', [$device]);
+        }
+
+        $visitors = $query->paginate(30)->withQueryString();
+
+        $totals = [
+            'all'      => TrackingEvent::distinct('visitor_id')->count('visitor_id'),
+            'mobile'   => $this->deviceCount('mobile'),
+            'desktop'  => $this->deviceCount('desktop'),
+            'tablet'   => $this->deviceCount('tablet'),
+        ];
+
+        return view('admin.visitors', compact('visitors', 'totals', 'device'));
+    }
+
+    private function deviceCount(string $device): int
+    {
+        return TrackingEvent::where('device', $device)->distinct('visitor_id')->count('visitor_id');
+    }
+
     /** JSON endpoint polled by the dashboard for real-time visitor counts. */
     public function live(): \Illuminate\Http\JsonResponse
     {

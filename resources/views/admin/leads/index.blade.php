@@ -78,6 +78,12 @@
                 {{ \App\Models\Lead::STATUSES[$lead->status] ?? $lead->status }}
             </span>
             @if ($lead->assignedAgent)<span class="text-xs px-2.5 py-1 rounded-full bg-maroon-50 text-maroon-800 font-medium">{{ $lead->assignedAgent->name }}</span>@else<span class="text-xs px-2.5 py-1 rounded-full bg-red-50 text-red-700">Unassigned</span>@endif
+            @if ($lead->follow_up_at)
+            <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $lead->follow_up_at->isPast() ? 'bg-red-50 text-red-700' : 'bg-gold-100 text-gold-800' }}">&#9993; Call {{ $lead->follow_up_at->format('d M, H:i') }}</span>
+            @endif
+            @if ($lead->tour_at)
+            <span class="text-xs px-2.5 py-1 rounded-full font-medium bg-maroon-100 text-maroon-800">&#127979; Tour {{ $lead->tour_at->format('d M, H:i') }}</span>
+            @endif
             <span class="ms-auto text-xs text-charcoal-600 whitespace-nowrap">{{ $lead->created_at->format('d M Y, H:i') }}</span>
             <svg class="w-4 h-4 text-charcoal-600 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
         </summary>
@@ -119,6 +125,16 @@
                             <option value="{{ $key }}" @selected($lead->status === $key)>{{ $label }}</option>
                             @endforeach
                         </select>
+                    </div>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3 rounded-sm bg-beige-50 border border-beige-200 p-3">
+                    <div>
+                        <label class="block text-xs font-medium text-charcoal-600 mb-1" for="follow-{{ $lead->id }}">&#9993; Schedule next call</label>
+                        <input type="datetime-local" id="follow-{{ $lead->id }}" name="follow_up_at" value="{{ optional($lead->follow_up_at)->format('Y-m-d\TH:i') }}" class="w-full h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-charcoal-600 mb-1" for="tour-{{ $lead->id }}">&#127979; Tour appointment (date &amp; time)</label>
+                        <input type="datetime-local" id="tour-{{ $lead->id }}" name="tour_at" value="{{ optional($lead->tour_at)->format('Y-m-d\TH:i') }}" class="w-full h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
                     </div>
                 </div>
                 <div>

@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\LeadActivity;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class LeadAdminController extends Controller
 {
@@ -63,6 +64,8 @@ class LeadAdminController extends Controller
             'notes'       => ['nullable', 'string', 'max:5000'],
             'assigned_to' => ['nullable', 'exists:users,id'],
             'feedback'    => ['nullable', 'string', 'max:2000'],
+            'follow_up_at' => ['nullable', 'date'],
+            'tour_at'      => ['nullable', 'date'],
         ]);
 
         if (! empty($data['status']) && $data['status'] !== $lead->status) {
@@ -83,6 +86,27 @@ class LeadAdminController extends Controller
         if ($request->has('notes')) {
             $lead->notes = $data['notes'] ?? null;
         }
+
+        // Schedule next call-back
+        if ($request->has('follow_up_at')) {
+            $new = ! empty($data['follow_up_at']) ? Carbon::parse($data['follow_up_at']) : null;
+            if (optional($new)->format('Y-m-d H:i') !== optional($lead->follow_up_at)->format('Y-m-d H:i')) {
+                $lead->follow_up_at = $new;
+                LeadActivity::create(['lead_id' => $lead->id, 'user_id' => $user->id, 'type' => 'schedule',
+                    'body' => $new ? 'Follow-up call scheduled for ' . $new->format('D, d M Y \a\t H:i') : 'Follow-up cleared']);
+            }
+        }
+
+        // Confirm tour appointment (date + time)
+        if ($request->has('tour_at')) {
+            $new = ! empty($data['tour_at']) ? Carbon::parse($data['tour_at']) : null;
+            if (optional($new)->format('Y-m-d H:i') !== optional($lead->tour_at)->format('Y-m-d H:i')) {
+                $lead->tour_at = $new;
+                LeadActivity::create(['lead_id' => $lead->id, 'user_id' => $user->id, 'type' => 'tour',
+                    'body' => $new ? 'Tour appointment set for ' . $new->format('D, d M Y \a\t H:i') : 'Tour appointment cleared']);
+            }
+        }
+
         $lead->save();
 
         if (! empty($data['feedback'])) {
@@ -90,6 +114,33 @@ class LeadAdminController extends Controller
         }
 
         return back()->with('success', "Lead #{$lead->id} updated.");
+    }
+
+    /** "My Schedule" — this agent's due call-backs and tour appointments. */
+    public function agenda(Request $request)
+    {
+        $user = $request->user();
+        $open = ['new', 'contacted', 'tour_booked', 'toured', 'applied'];
+
+        $base = fn () => Lead::query()->with(['assignedAgent', 'activities'])->whereIn('status', $open)
+            ->when($user->role === 'sales_agent', fn ($q) => $q->where('assigned_to', $user->id))
+            ->when($user->role !== 'sales_agent' && $request->filled('agent'),
+                fn ($q) => $q->where('assigned_to', $request->agent === 'unassigned' ? null : (int) $request->agent));
+
+        $calls = $base()->whereNotNull('follow_up_at')->orderBy('follow_up_at')->get();
+        $todayStart = now()->startOfDay();
+        $todayEnd = now()->endOfDay();
+
+        $overdue    = $calls->filter(fn ($l) => $l->follow_up_at->lt($todayStart))->values();
+        $todayCalls = $calls->filter(fn ($l) => $l->follow_up_at->between($todayStart, $todayEnd))->values();
+        $upcoming   = $calls->filter(fn ($l) => $l->follow_up_at->gt($todayEnd))->values();
+
+        $tours = $base()->whereNotNull('tour_at')->where('tour_at', '>=', $todayStart)
+            ->orderBy('tour_at')->get();
+
+        $agents = User::whereIn('role', ['sales_agent', 'super_admin'])->where('is_active', true)->orderBy('name')->get();
+
+        return view('admin.leads.agenda', compact('overdue', 'todayCalls', 'upcoming', 'tours', 'agents'));
     }
 
     public function destroy(Request $request, Lead $lead)

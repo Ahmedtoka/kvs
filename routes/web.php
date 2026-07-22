@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CareerAdminController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventAdminController;
 use App\Http\Controllers\Admin\LeadAdminController;
@@ -74,6 +75,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('role:media_buyer')->name('analytics');
     Route::get('/analytics/live', [AnalyticsController::class, 'live'])->middleware('role:media_buyer')->name('analytics.live');
     Route::get('/flow', [AnalyticsController::class, 'flow'])->middleware('role:media_buyer')->name('flow');
+    Route::get('/visitors', [AnalyticsController::class, 'visitors'])->middleware('role:media_buyer')->name('visitors');
 
     Route::get('/reports', [ReportController::class, 'index'])->middleware('role:media_buyer')->name('reports');
 
@@ -87,6 +89,14 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
         Route::delete('/events/{event}', [EventAdminController::class, 'destroy'])->name('events.destroy');
     });
 
+    Route::middleware('role:content_editor')->group(function () {
+        Route::get('/content', [ContentController::class, 'hub'])->name('content.hub');
+        Route::get('/content/{group}', [ContentController::class, 'group'])->whereIn('group', ['faq', 'service'])->name('content.group');
+        Route::post('/content/{group}', [ContentController::class, 'store'])->whereIn('group', ['faq', 'service'])->name('content.store');
+        Route::patch('/content/item/{item}', [ContentController::class, 'update'])->name('content.update');
+        Route::delete('/content/item/{item}', [ContentController::class, 'destroy'])->name('content.destroy');
+    });
+
     Route::middleware('role:super_admin')->group(function () {
         Route::get('/users', [UserAdminController::class, 'index'])->name('users.index');
         Route::post('/users', [UserAdminController::class, 'store'])->name('users.store');
@@ -94,15 +104,20 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
         Route::delete('/users/{user}', [UserAdminController::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::get('/leads', [LeadAdminController::class, 'index'])->name('leads.index');
-    Route::get('/leads/export', [LeadAdminController::class, 'export'])->name('leads.export');
-    Route::patch('/leads/{lead}', [LeadAdminController::class, 'update'])->name('leads.update');
-    Route::delete('/leads/{lead}', [LeadAdminController::class, 'destroy'])->name('leads.destroy');
+    Route::middleware('role:sales_agent,media_buyer')->group(function () {
+        Route::get('/leads', [LeadAdminController::class, 'index'])->name('leads.index');
+        Route::get('/leads/export', [LeadAdminController::class, 'export'])->name('leads.export');
+        Route::get('/leads/agenda', [LeadAdminController::class, 'agenda'])->name('leads.agenda');
+        Route::patch('/leads/{lead}', [LeadAdminController::class, 'update'])->name('leads.update');
+        Route::delete('/leads/{lead}', [LeadAdminController::class, 'destroy'])->name('leads.destroy');
+    });
 
-    Route::get('/careers', [CareerAdminController::class, 'index'])->name('careers.index');
-    Route::get('/careers/{application}/cv', [CareerAdminController::class, 'download'])->name('careers.download');
-    Route::patch('/careers/{application}', [CareerAdminController::class, 'update'])->name('careers.update');
-    Route::delete('/careers/{application}', [CareerAdminController::class, 'destroy'])->name('careers.destroy');
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/careers', [CareerAdminController::class, 'index'])->name('careers.index');
+        Route::get('/careers/{application}/cv', [CareerAdminController::class, 'download'])->name('careers.download');
+        Route::patch('/careers/{application}', [CareerAdminController::class, 'update'])->name('careers.update');
+        Route::delete('/careers/{application}', [CareerAdminController::class, 'destroy'])->name('careers.destroy');
+    });
 
     Route::get('/password', [AuthController::class, 'showPassword'])->name('password.edit');
     Route::patch('/password', [AuthController::class, 'updatePassword'])->name('password.update');
