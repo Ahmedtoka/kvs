@@ -30,7 +30,7 @@
         </div>
         <h1 class="font-display font-bold text-4xl sm:text-5xl lg:text-[64px] leading-[1.12] max-w-4xl mx-auto">
             Rooted in Tradition.<br>
-            <span class="text-gold-400 italic">Inspired by the Future.</span>
+            <span class="text-gold-400">Inspired by the Future.</span>
         </h1>
         <p class="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-ivory/80 leading-relaxed">
             Knowledge Valley International School is a leading British international school delivering the Cambridge
@@ -73,7 +73,7 @@
         </div>
         <div class="reveal relative">
             <div class="absolute -top-4 -left-4 w-full h-full border-2 border-gold-500/60 rounded-sm" aria-hidden="true"></div>
-            <img src="{{ $valleyImgs[1] ?? ($valleyImgs[0] ?? '/img/welcome.svg') }}" alt="Students learning at Knowledge Valley International School" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000">
+            <video data-welcome-video src="/videos/Homevideo.webm" poster="{{ $valleyImgs[0] ?? '/img/campus.jpg' }}" muted loop playsinline preload="none" aria-label="Life at Knowledge Valley International School" class="relative w-full aspect-[16/10] object-cover rounded-sm shadow-xl" width="1600" height="1000"></video>
             <div class="absolute -bottom-6 right-6 bg-maroon-900 text-ivory px-6 py-4 rounded-sm shadow-lg">
                 <span class="block font-display text-2xl font-bold text-gold-400">Since 2008</span>
                 <span class="block text-xs tracking-widest uppercase text-ivory/70">Excellence in Education</span>
@@ -556,4 +556,24 @@
         </div>
     </div>
 </section>
+{{-- Welcome-section video: muted autoplay only when scrolled into view (mobile + desktop) --}}
+<script>
+    (function () {
+        var v = document.querySelector('[data-welcome-video]');
+        if (!v) return;
+        v.muted = true; // required for autoplay
+        if (!('IntersectionObserver' in window)) { v.play().catch(function () {}); return; }
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting && e.intersectionRatio >= 0.4) {
+                    var pr = v.play();
+                    if (pr && pr.catch) { pr.catch(function () {}); }
+                } else {
+                    v.pause();
+                }
+            });
+        }, { threshold: [0, 0.4, 0.6] });
+        io.observe(v);
+    })();
+</script>
 @endsection

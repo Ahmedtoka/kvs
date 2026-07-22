@@ -26,5 +26,9 @@ class Setting extends Model
         'social_instagram' => 'Instagram URL',
         'social_linkedin'  => 'LinkedIn URL',
         'ga4_id'           => 'Google Analytics 4 ID (G-XXXXXXX)',
+        'meta_pixel_id'    => 'Meta / Facebook Pixel ID (numbers only)',
+        'tiktok_pixel_id'  => 'TikTok Pixel ID',
+        'google_ads_id'    => 'Google Ads Conversion ID (AW-XXXXXXXXX)',
+        'google_ads_label' => 'Google Ads Conversion Label',
     ];
 }

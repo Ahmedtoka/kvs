@@ -52,7 +52,9 @@ class LeadController extends Controller
             'source'         => url()->previous(),
         ]);
 
-        return back()->with('lead_success', __("Thank you! Our admissions team will contact you within 24 hours."));
+        $this->logConversion($request, $type);
+
+        return redirect()->route('thank-you', ['type' => $type])->with('just_converted', true);
     }
 
     /** Public careers form handler. */
@@ -90,6 +92,43 @@ class LeadController extends Controller
             'cv_path'  => $cvPath,
         ]);
 
-        return back()->with('lead_success', __('Thank you! Your application has been received — our HR team will be in touch.'));
+        $this->logConversion($request, 'career');
+
+        return redirect()->route('thank-you', ['type' => 'career'])->with('just_converted', true);
+    }
+
+    /**
+     * Record an internal first-party conversion event with first-touch UTM
+     * attribution, so the User-Flow report can show which ad / campaign drove it.
+     */
+    private function logConversion(Request $request, string $type): void
+    {
+        $vid = $request->cookie('kvs_vid');
+        if (! is_string($vid) || strlen($vid) !== 36) {
+            $vid = (string) \Illuminate\Support\Str::uuid();
+        }
+
+        $firstTouch = \App\Models\TrackingEvent::where('visitor_id', $vid)
+            ->where('event', 'pageview')
+            ->where(fn ($q) => $q->whereNotNull('utm_source')->orWhereNotNull('utm_campaign'))
+            ->orderBy('id')
+            ->first();
+
+        try {
+            \App\Models\TrackingEvent::create([
+                'visitor_id'   => $vid,
+                'session_id'   => $request->hasSession() ? $request->session()->getId() : null,
+                'event'        => 'conversion',
+                'page'         => '/thank-you/' . $type,
+                'label'        => $type,
+                'referrer'     => \Illuminate\Support\Str::limit((string) url()->previous(), 180, ''),
+                'utm_source'   => $firstTouch->utm_source ?? null,
+                'utm_medium'   => $firstTouch->utm_medium ?? null,
+                'utm_campaign' => $firstTouch->utm_campaign ?? null,
+                'device'       => preg_match('/Mobile|Android|iPhone/i', (string) $request->userAgent()) ? 'mobile' : 'desktop',
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 }

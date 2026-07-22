@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserAdminController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\TrackController;
+use App\Http\Controllers\ThankYouController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,9 @@ Route::view('/services', 'services')->name('services');
 Route::view('/contact', 'contact')->name('contact');
 Route::view('/careers', 'careers')->name('careers');
 
+// Post-submission Thank-You / conversion page
+Route::get('/thank-you/{type?}', [ThankYouController::class, 'show'])->name('thank-you');
+
 // First-party analytics beacon (JS sendBeacon)
 Route::post('/track', [TrackController::class, 'store'])->middleware('throttle:120,1')->name('track');
 
@@ -69,6 +73,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('role:media_buyer')->name('analytics');
     Route::get('/analytics/live', [AnalyticsController::class, 'live'])->middleware('role:media_buyer')->name('analytics.live');
+    Route::get('/flow', [AnalyticsController::class, 'flow'])->middleware('role:media_buyer')->name('flow');
 
     Route::get('/reports', [ReportController::class, 'index'])->middleware('role:media_buyer')->name('reports');
 

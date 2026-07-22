@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Models\TrackingEvent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -87,6 +89,129 @@ class AnalyticsController extends Controller
         $live = $this->liveData();
 
         return view('admin.analytics', compact('cards', 'funnel', 'funnelMax', 'topPages', 'interactions', 'days', 'dailyMax', 'sources', 'live'));
+    }
+
+    /**
+     * User-Flow report: where visitors enter, where they leave, the journeys
+     * they take, and which traffic sources / campaigns actually convert.
+     */
+    public function flow(Request $request): View
+    {
+        $from = $request->filled('from')
+            ? Carbon::parse($request->input('from'))->startOfDay()
+            : now()->subDays(30)->startOfDay();
+        $to = $request->filled('to')
+            ? Carbon::parse($request->input('to'))->endOfDay()
+            : now()->endOfDay();
+        if ($from->gt($to)) {
+            [$from, $to] = [$to->copy()->startOfDay(), $from->copy()->endOfDay()];
+        }
+        $between = [$from, $to];
+
+        // ---- Headline KPIs ----
+        $visitors = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $between)
+            ->distinct('visitor_id')->count('visitor_id');
+        $pageviews = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $between)->count();
+        $conversions = TrackingEvent::where('event', 'conversion')->whereBetween('created_at', $between)->count();
+
+        $kpis = [
+            'visitors'    => $visitors,
+            'pageviews'   => $pageviews,
+            'conversions' => $conversions,
+            'rate'        => $visitors > 0 ? round($conversions / $visitors * 100, 1) : 0.0,
+            'avg_pages'   => $visitors > 0 ? round($pageviews / $visitors, 1) : 0.0,
+        ];
+
+        // ---- Entry pages (first pageview per visitor) ----
+        $firstSub = DB::table('tracking_events')
+            ->select('visitor_id', DB::raw('MIN(id) as edge_id'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->groupBy('visitor_id');
+        $entryPages = DB::table('tracking_events as e')
+            ->joinSub($firstSub, 'f', fn ($j) => $j->on('e.id', '=', 'f.edge_id'))
+            ->select('e.page', DB::raw('COUNT(*) as total'))
+            ->groupBy('e.page')->orderByDesc('total')->limit(12)->get();
+
+        // ---- Exit pages (last pageview per visitor) ----
+        $lastSub = DB::table('tracking_events')
+            ->select('visitor_id', DB::raw('MAX(id) as edge_id'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->groupBy('visitor_id');
+        $exitPages = DB::table('tracking_events as e')
+            ->joinSub($lastSub, 'l', fn ($j) => $j->on('e.id', '=', 'l.edge_id'))
+            ->select('e.page', DB::raw('COUNT(*) as total'))
+            ->groupBy('e.page')->orderByDesc('total')->limit(12)->get();
+
+        // ---- Top journeys (page sequences, consecutive duplicates collapsed) ----
+        $rows = DB::table('tracking_events')
+            ->select('visitor_id', 'page')
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->orderBy('visitor_id')->orderBy('id')
+            ->limit(20000)->get();
+
+        $paths = [];
+        foreach ($rows->groupBy('visitor_id') as $events) {
+            $seq = [];
+            foreach ($events as $e) {
+                if (empty($seq) || end($seq) !== $e->page) {
+                    $seq[] = $e->page;
+                }
+            }
+            $seq = array_slice($seq, 0, 5);
+            $key = implode('  |  ', $seq);
+            $paths[$key] = ($paths[$key] ?? 0) + 1;
+        }
+        arsort($paths);
+        $topPaths = array_slice($paths, 0, 12, true);
+        $pathsCapped = $rows->count() >= 20000;
+
+        // ---- Conversions by form type ----
+        $convByType = TrackingEvent::select('label', DB::raw('COUNT(*) as total'))
+            ->where('event', 'conversion')->whereBetween('created_at', $between)
+            ->groupBy('label')->orderByDesc('total')->get();
+
+        // ---- Traffic-source performance (visitors vs conversions vs rate) ----
+        $srcVisitors = DB::table('tracking_events')
+            ->select(DB::raw("COALESCE(NULLIF(utm_source, ''), 'Direct / Organic') as source"),
+                     DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->groupBy('source')->get()->keyBy('source');
+
+        $srcConversions = DB::table('tracking_events')
+            ->select(DB::raw("COALESCE(NULLIF(utm_source, ''), 'Direct / Organic') as source"),
+                     DB::raw('COUNT(*) as conversions'))
+            ->where('event', 'conversion')->whereBetween('created_at', $between)
+            ->groupBy('source')->get()->keyBy('source');
+
+        $adsPerformance = collect($srcVisitors->keys()->merge($srcConversions->keys())->unique())
+            ->map(function ($source) use ($srcVisitors, $srcConversions) {
+                $v = (int) ($srcVisitors[$source]->visitors ?? 0);
+                $c = (int) ($srcConversions[$source]->conversions ?? 0);
+                return [
+                    'source'      => $source,
+                    'visitors'    => $v,
+                    'conversions' => $c,
+                    'rate'        => $v > 0 ? round($c / $v * 100, 1) : 0.0,
+                ];
+            })
+            ->sortByDesc('visitors')->values()->take(12);
+
+        // ---- Campaign-level conversions (real UTM campaigns only) ----
+        $campaigns = DB::table('tracking_events')
+            ->select(
+                DB::raw("COALESCE(NULLIF(utm_source, ''), 'Direct') as source"),
+                DB::raw('utm_campaign as campaign'),
+                DB::raw('COUNT(*) as conversions'))
+            ->where('event', 'conversion')->whereBetween('created_at', $between)
+            ->whereNotNull('utm_campaign')->where('utm_campaign', '!=', '')
+            ->groupBy('source', 'campaign')->orderByDesc('conversions')->limit(15)->get();
+
+        $typeLabels = Lead::TYPES + ['career' => 'Career Application'];
+
+        return view('admin.flow', compact(
+            'from', 'to', 'kpis', 'entryPages', 'exitPages',
+            'topPaths', 'pathsCapped', 'convByType', 'adsPerformance', 'campaigns', 'typeLabels'
+        ));
     }
 
     /** JSON endpoint polled by the dashboard for real-time visitor counts. */
