@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LeadAdminController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserAdminController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\TrackController;
@@ -68,6 +69,9 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('role:media_buyer')->name('analytics');
 
     Route::get('/reports', [ReportController::class, 'index'])->middleware('role:media_buyer')->name('reports');
+
+    Route::get('/settings', [SettingController::class, 'index'])->middleware('role:content_editor')->name('settings');
+    Route::patch('/settings', [SettingController::class, 'update'])->middleware('role:content_editor')->name('settings.update');
 
     Route::middleware('role:super_admin')->group(function () {
         Route::get('/users', [UserAdminController::class, 'index'])->name('users.index');

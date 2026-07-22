@@ -10,14 +10,14 @@
     <link rel="icon" type="image/png" href="/img/logo-mark.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @if (config('services.ga4.measurement_id'))
+    @if (setting('ga4_id'))
     {{-- Google Analytics 4 --}}
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.ga4.measurement_id') }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ setting('ga4_id') }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', '{{ config('services.ga4.measurement_id') }}');
+        gtag('config', '{{ setting('ga4_id') }}');
     </script>
     @endif
 </head>

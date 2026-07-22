@@ -72,3 +72,21 @@ if (!function_exists('kvs_file')) {
             : null;
     }
 }
+
+if (!function_exists('setting')) {
+    /** Read a site setting (cached per request); returns $default when unset/empty. */
+    function setting(string $key, $default = null)
+    {
+        static $all = null;
+        if ($all === null) {
+            try {
+                $all = \App\Models\Setting::pluck('value', 'key')->all();
+            } catch (\Throwable $e) {
+                $all = [];
+            }
+        }
+        $v = $all[$key] ?? null;
+
+        return ($v === null || $v === '') ? $default : $v;
+    }
+}
