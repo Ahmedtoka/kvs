@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\CareerAdminController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LeadAdminController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\UserAdminController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\TrackController;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +66,15 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->middleware('role:media_buyer')->name('analytics');
+
+    Route::get('/reports', [ReportController::class, 'index'])->middleware('role:media_buyer')->name('reports');
+
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/users', [UserAdminController::class, 'index'])->name('users.index');
+        Route::post('/users', [UserAdminController::class, 'store'])->name('users.store');
+        Route::patch('/users/{user}', [UserAdminController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserAdminController::class, 'destroy'])->name('users.destroy');
+    });
 
     Route::get('/leads', [LeadAdminController::class, 'index'])->name('leads.index');
     Route::get('/leads/export', [LeadAdminController::class, 'export'])->name('leads.export');

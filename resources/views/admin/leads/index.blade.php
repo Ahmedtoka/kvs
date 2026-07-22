@@ -31,6 +31,17 @@
             @endforeach
         </select>
     </div>
+    @if (auth()->user()->role !== 'sales_agent')
+    <div>
+        <label for="f-agent" class="block text-xs font-medium text-charcoal-600 mb-1">Agent</label>
+        <select id="f-agent" name="agent" class="h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
+            <option value="">All</option>
+            <option value="unassigned" @selected(request('agent') === 'unassigned')>Unassigned</option>
+            @foreach ($agents as $ag)
+            <option value="{{ $ag->id }}" @selected((string) request('agent') === (string) $ag->id)>{{ $ag->name }}</option>
+            @endforeach
+        </select>
+    </div>
     <div class="grow min-w-40">
         <label for="f-q" class="block text-xs font-medium text-charcoal-600 mb-1">Search</label>
         <input id="f-q" type="text" name="q" value="{{ request('q') }}" placeholder="Name, phone or email…"
@@ -57,6 +68,7 @@
             <span class="text-xs px-2.5 py-1 rounded-full font-semibold {{ $lead->status === 'new' ? 'bg-gold-100 text-gold-800' : ($lead->status === 'enrolled' ? 'bg-maroon-100 text-maroon-800' : 'bg-beige-100 text-charcoal-700') }}">
                 {{ \App\Models\Lead::STATUSES[$lead->status] ?? $lead->status }}
             </span>
+            @if ($lead->assignedAgent)<span class="text-xs px-2.5 py-1 rounded-full bg-maroon-50 text-maroon-800 font-medium">{{ $lead->assignedAgent->name }}</span>@else<span class="text-xs px-2.5 py-1 rounded-full bg-red-50 text-red-700">Unassigned</span>@endif
             <span class="ms-auto text-xs text-charcoal-600 whitespace-nowrap">{{ $lead->created_at->format('d M Y, H:i') }}</span>
             <svg class="w-4 h-4 text-charcoal-600 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
         </summary>
@@ -79,6 +91,17 @@
             <form method="POST" action="{{ route('admin.leads.update', $lead) }}" class="space-y-3">
                 @csrf
                 @method('PATCH')
+                @if (auth()->user()->role !== 'sales_agent')
+                <div>
+                    <label class="block text-xs font-medium text-charcoal-600 mb-1" for="assign-{{ $lead->id }}">Assigned to</label>
+                    <select id="assign-{{ $lead->id }}" name="assigned_to" class="w-full h-10 px-3 rounded-sm border border-beige-300 bg-white text-sm">
+                        <option value="">— Unassigned —</option>
+                        @foreach ($agents as $ag)
+                        <option value="{{ $ag->id }}" @selected((int) $lead->assigned_to === (int) $ag->id)>{{ $ag->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
                 <div class="flex gap-3">
                     <div class="grow">
                         <label class="block text-xs font-medium text-charcoal-600 mb-1" for="status-{{ $lead->id }}">Status</label>
@@ -93,6 +116,10 @@
                     <label class="block text-xs font-medium text-charcoal-600 mb-1" for="notes-{{ $lead->id }}">Internal notes</label>
                     <textarea id="notes-{{ $lead->id }}" name="notes" rows="2" class="w-full px-3 py-2 rounded-sm border border-beige-300 bg-white text-sm" placeholder="Call summary, follow-up date…">{{ $lead->notes }}</textarea>
                 </div>
+                <div>
+                    <label class="block text-xs font-medium text-charcoal-600 mb-1" for="fb-{{ $lead->id }}">Add feedback / call log</label>
+                    <textarea id="fb-{{ $lead->id }}" name="feedback" rows="2" class="w-full px-3 py-2 rounded-sm border border-beige-300 bg-white text-sm" placeholder="What happened on the call? Next step?"></textarea>
+                </div>
                 <div class="flex items-center gap-3">
                     <button type="submit" class="btn-gold !py-2 !px-4 !text-xs">Save</button>
                     <button type="submit" form="delete-{{ $lead->id }}" class="text-xs text-maroon-600 hover:text-maroon-800 cursor-pointer"
@@ -103,6 +130,19 @@
                 @csrf
                 @method('DELETE')
             </form>
+            @if ($lead->activities->isNotEmpty())
+            <div class="lg:col-span-2 border-t border-beige-100 pt-4">
+                <p class="text-xs font-semibold text-charcoal-600 mb-2 uppercase tracking-wide">Activity log</p>
+                <ul class="space-y-2">
+                    @foreach ($lead->activities as $act)
+                    <li class="text-sm flex gap-3">
+                        <span class="text-xs text-charcoal-500 whitespace-nowrap w-28 shrink-0">{{ $act->created_at->format('d M, H:i') }}</span>
+                        <span class="text-charcoal-700"><span class="font-medium">{{ optional($act->user)->name ?? 'System' }}:</span> {{ $act->body }}</span>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
         </div>
     </details>
     @empty
