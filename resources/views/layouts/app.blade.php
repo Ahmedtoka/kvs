@@ -15,7 +15,7 @@
     @php
         $ga4 = setting('ga4_id');
         $gAds = setting('google_ads_id');
-        $metaPixel = setting('meta_pixel_id') ?: '1363243909311016';
+        $metaPixel = setting('meta_pixel_id') ?: config('services.meta.pixel_id') ?: '1363243909311016';
         $tiktokPixel = setting('tiktok_pixel_id');
     @endphp
 

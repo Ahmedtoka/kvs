@@ -47,9 +47,10 @@
     window.addEventListener('load', function () {
         var name = @json($label);
         var type = @json($type);
+        var eid = @json(session('meta_event_id'));
 
         // Meta (Facebook / Instagram) Pixel
-        try { if (window.fbq) { fbq('track', 'Lead', { content_name: name, content_category: type }); } } catch (e) {}
+        try { if (window.fbq) { fbq('track', 'Lead', { content_name: name, content_category: type }, eid ? { eventID: eid } : undefined); } } catch (e) {}
 
         // TikTok Pixel
         try { if (window.ttq) { ttq.track('SubmitForm', { content_name: name, content_type: type }); } } catch (e) {}

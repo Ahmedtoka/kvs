@@ -78,7 +78,7 @@
                     </div>
                     <div>
                         <label for="t_date" class="block text-sm font-medium mb-1.5">Preferred Tour Date <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="date" id="t_date" name="preferred_date" value="{{ old('preferred_date') }}" min="{{ date('Y-m-d') }}" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <input type="text" id="t_date" name="preferred_date" placeholder="Select a date" autocomplete="off" value="{{ old('preferred_date') }}" min="{{ date('Y-m-d') }}" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="t_notes" class="block text-sm font-medium mb-1.5">Anything we should know? <span class="text-charcoal-600/60 font-normal">(optional)</span></label>
@@ -94,5 +94,28 @@
         </div>
     </div>
 </section>
+
+
+{{-- Tour date picker: Fridays & Saturdays (Egypt weekend) are closed --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('t_date');
+        if (!el || !window.flatpickr) { return; }
+        flatpickr(el, {
+            dateFormat: 'Y-m-d',
+            minDate: 'today',
+            disableMobile: true,
+            locale: { firstDayOfWeek: 6 },
+            disable: [
+                function (date) {
+                    var d = date.getDay(); // 0=Sun .. 5=Fri, 6=Sat
+                    return d === 5 || d === 6;
+                }
+            ]
+        });
+    });
+</script>
 
 @endsection

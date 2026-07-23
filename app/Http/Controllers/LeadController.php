@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\CareerApplication;
 use App\Models\Lead;
+use App\Services\MetaConversions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class LeadController extends Controller
 {
@@ -34,6 +36,11 @@ class LeadController extends Controller
             $rules['student_name'][0] = 'required';
             $rules['year_group'][0] = 'required';
             $rules['preferred_date'][0] = 'required';
+            $rules['preferred_date'][] = function ($attribute, $value, $fail) {
+                if ($value && in_array(\Illuminate\Support\Carbon::parse($value)->dayOfWeek, [5, 6], true)) {
+                    $fail('Tours are not available on Fridays or Saturdays. Please choose another day.');
+                }
+            };
         }
 
         $data = $request->validate($rules, ['phone.regex' => 'Please enter a valid 11-digit mobile number, e.g. 01012345678.']);
@@ -54,7 +61,18 @@ class LeadController extends Controller
 
         $this->logConversion($request, $type);
 
-        return redirect()->route('thank-you', ['type' => $type])->with('just_converted', true);
+        $eventId = (string) Str::uuid();
+        MetaConversions::sendLead($request, $eventId, [
+            'email'            => $data['email'] ?? null,
+            'phone'            => $data['phone'] ?? null,
+            'name'             => $data['parent_name'] ?? null,
+            'content_name'     => $type,
+            'content_category' => 'lead',
+        ]);
+
+        return redirect()->route('thank-you', ['type' => $type])
+            ->with('just_converted', true)
+            ->with('meta_event_id', $eventId);
     }
 
     /** Public careers form handler. */
@@ -94,7 +112,18 @@ class LeadController extends Controller
 
         $this->logConversion($request, 'career');
 
-        return redirect()->route('thank-you', ['type' => 'career'])->with('just_converted', true);
+        $eventId = (string) Str::uuid();
+        MetaConversions::sendLead($request, $eventId, [
+            'email'            => $data['email'] ?? null,
+            'phone'            => $data['phone'] ?? null,
+            'name'             => $data['name'] ?? null,
+            'content_name'     => 'career',
+            'content_category' => 'career',
+        ]);
+
+        return redirect()->route('thank-you', ['type' => 'career'])
+            ->with('just_converted', true)
+            ->with('meta_event_id', $eventId);
     }
 
     /**
