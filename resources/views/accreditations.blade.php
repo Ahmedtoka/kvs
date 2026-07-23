@@ -26,7 +26,7 @@
 
         <div class="mt-12 grid sm:grid-cols-2 gap-8">
             @php
-                $accreditations = [
+                $accFallback = [
                     ['logo' => '/img/partner-2.jpg', 'name' => 'University of Cambridge', 'type' => 'Academic Accreditation', 'desc' => 'Cambridge International qualifications and the Cambridge Learner Attributes framework — the world\'s most recognised British curriculum pathway.'],
                     ['logo' => '/img/partner-4.jpg', 'name' => 'Pearson Edexcel', 'type' => 'Academic Accreditation', 'desc' => 'An approved Pearson Edexcel centre, offering internationally examined qualifications through to International GCSE.'],
                     ['logo' => '/img/OxfordAQAMasterLogo.png', 'name' => 'Oxford International AQA', 'type' => 'Academic Accreditation', 'desc' => 'Approved to deliver Oxford International AQA examinations — bringing the rigour of the UK\'s leading exam board to our students.'],
@@ -34,13 +34,21 @@
                     ['logo' => '/img/partner-3.jpg', 'name' => 'Goethe-Institut', 'type' => 'Language Partnership — German', 'desc' => 'Our German language programme is delivered in partnership with the Goethe-Institut, with internationally certified levels.'],
                     ['logo' => '/img/partner-7.jpg', 'name' => 'Institut Français d\'Égypte', 'type' => 'Language Partnership — French', 'desc' => 'French at KVS is certified through the Institut Français — official DELF-track learning from an early age.'],
                 ];
+                $accs = rescue(function () {
+                    return \App\Models\ContentItem::where('group', 'accreditation')->where('is_active', true)
+                        ->orderBy('sort_order')->orderBy('id')->get()
+                        ->filter(fn ($i) => $i->icon)
+                        ->map(fn ($i) => ['logo' => $i->icon, 'name' => $i->title, 'type' => '', 'desc' => $i->body])
+                        ->values()->all();
+                }, []);
+                if (empty($accs)) { $accs = $accFallback; }
             @endphp
-            @foreach ($accreditations as $acc)
+            @foreach ($accs as $acc)
             <article class="reveal bg-white border border-beige-200 rounded-sm p-8 hover:shadow-lg transition-shadow duration-300">
                 <div class="h-16 flex items-center">
                     <img src="{{ $acc['logo'] }}" alt="{{ $acc['name'] }} logo" class="max-h-16 max-w-[220px] object-contain" loading="lazy">
                 </div>
-                <p class="text-xs font-semibold tracking-wider uppercase text-gold-700 mt-6">{{ $acc['type'] }}</p>
+                @if (!empty($acc['type']))<p class="text-xs font-semibold tracking-wider uppercase text-gold-700 mt-6">{{ $acc['type'] }}</p>@endif
                 <h3 class="font-display text-xl font-semibold text-maroon-900 mt-1.5">{{ $acc['name'] }}</h3>
                 <p class="mt-3 text-sm text-charcoal-600 leading-relaxed">{{ $acc['desc'] }}</p>
             </article>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\MaintenanceController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserAdminController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\ThankYouController;
@@ -44,6 +45,8 @@ Route::view('/faqs', 'faqs')->name('faqs');
 // School Life
 Route::view('/school-life', 'school-life')->name('school-life');
 Route::view('/services', 'services')->name('services');
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 // Contact
 Route::view('/contact', 'contact')->name('contact');
@@ -93,8 +96,8 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::middleware('role:content_editor')->group(function () {
         Route::get('/content', [ContentController::class, 'hub'])->name('content.hub');
-        Route::get('/content/{group}', [ContentController::class, 'group'])->whereIn('group', ['faq', 'service'])->name('content.group');
-        Route::post('/content/{group}', [ContentController::class, 'store'])->whereIn('group', ['faq', 'service'])->name('content.store');
+        Route::get('/content/{group}', [ContentController::class, 'group'])->whereIn('group', ['faq', 'service', 'accreditation', 'testimonial'])->name('content.group');
+        Route::post('/content/{group}', [ContentController::class, 'store'])->whereIn('group', ['faq', 'service', 'accreditation', 'testimonial'])->name('content.store');
         Route::patch('/content/item/{item}', [ContentController::class, 'update'])->name('content.update');
         Route::delete('/content/item/{item}', [ContentController::class, 'destroy'])->name('content.destroy');
     });

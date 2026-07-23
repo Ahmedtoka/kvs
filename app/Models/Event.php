@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'excerpt', 'body', 'image',
+        'title', 'slug', 'excerpt', 'body', 'image', 'gallery',
         'location', 'starts_at', 'ends_at', 'is_featured', 'sort_order', 'is_active',
     ];
 
@@ -19,6 +19,7 @@ class Event extends Model
             'ends_at'     => 'datetime',
             'is_featured' => 'boolean',
             'is_active'   => 'boolean',
+            'gallery'     => 'array',
         ];
     }
 

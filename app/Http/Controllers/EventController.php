@@ -9,17 +9,21 @@ class EventController extends Controller
 {
     public function index(): View
     {
-        return view('events.index', [
-            'upcoming' => Event::upcoming()->get(),
-            'past'     => Event::past()->paginate(9, ['*'], 'past_page'),
-        ]);
+        $events = Event::active()->ordered()->get();
+
+        return view('events.index', compact('events'));
     }
 
     public function show(Event $event): View
     {
-        return view('events.show', [
-            'event' => $event,
-            'more'  => Event::upcoming()->where('id', '!=', $event->id)->limit(3)->get(),
-        ]);
+        abort_unless($event->is_active, 404);
+
+        $ordered = Event::active()->ordered()->get(['slug', 'title', 'image']);
+        $pos = $ordered->search(fn ($e) => $e->slug === $event->slug);
+
+        $prev = $pos > 0 ? $ordered[$pos - 1] : null;
+        $next = ($pos !== false && $pos < $ordered->count() - 1) ? $ordered[$pos + 1] : null;
+
+        return view('events.show', compact('event', 'prev', 'next'));
     }
 }

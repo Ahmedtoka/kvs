@@ -268,7 +268,7 @@
                 <p class="eyebrow">School Life</p>
                 <h2 class="heading-serif text-3xl sm:text-4xl lg:text-[42px] mt-3 gold-rule-left">Life at KVS</h2>
             </div>
-            <a href="/school-life" class="inline-flex items-center gap-2 font-semibold text-maroon-800 hover:text-maroon-600 transition-colors shrink-0 group">
+            <a href="{{ route('events.index') }}" class="inline-flex items-center gap-2 font-semibold text-maroon-800 hover:text-maroon-600 transition-colors shrink-0 group">
                 View all events
                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/></svg>
             </a>
@@ -279,7 +279,7 @@
                 $gallery = rescue(fn () => \App\Models\Event::active()->where('is_featured', true)->ordered()->limit(6)->get(), collect());
             @endphp
             @foreach ($gallery as $item)
-            <a href="/school-life" class="reveal group relative rounded-sm overflow-hidden block focus:outline-2 focus:outline-offset-2 focus:outline-gold-600">
+            <a href="{{ route('events.show', $item->slug) }}" class="reveal group relative rounded-sm overflow-hidden block focus:outline-2 focus:outline-offset-2 focus:outline-gold-600">
                 <img src="{{ $item->image }}" alt="{{ $item->title }} at KVS" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1000" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-maroon-950/85 via-maroon-950/10 to-transparent"></div>
                 <span class="absolute bottom-0 inset-x-0 p-4 sm:p-5 text-ivory font-display font-semibold text-sm sm:text-lg">{{ $item->title }}</span>
@@ -299,13 +299,21 @@
         </div>
 
         @php
-            $reviews = [
+            $reviewsFallback = [
                 ['src' => '/videos/testimonial-1.mp4', 'poster' => '/videos/posters/testimonial-1.jpg'],
                 ['src' => '/videos/testimonial-2.mp4', 'poster' => '/videos/posters/testimonial-2.jpg'],
                 ['src' => '/videos/testimonial-3.mp4', 'poster' => '/videos/posters/testimonial-3.jpg'],
                 ['src' => '/videos/testimonial-4.mp4', 'poster' => '/videos/posters/testimonial-4.jpg'],
                 ['src' => '/videos/testimonial-5.mp4', 'poster' => '/videos/posters/testimonial-5.jpg'],
             ];
+            $reviews = rescue(function () {
+                return \App\Models\ContentItem::where('group', 'testimonial')->where('is_active', true)
+                    ->orderBy('sort_order')->orderBy('id')->get()
+                    ->filter(fn ($i) => $i->icon)
+                    ->map(fn ($i) => ['src' => $i->icon, 'poster' => $i->body ?: ''])
+                    ->values()->all();
+            }, []);
+            if (empty($reviews)) { $reviews = $reviewsFallback; }
         @endphp
 
         <div class="relative mt-14 reveal">

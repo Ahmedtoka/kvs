@@ -1,58 +1,43 @@
-@extends('layouts.site')
+@extends('layouts.app')
 
-@section('title', 'Events at KVS | Knowledge Valley International School')
-@section('description', 'Upcoming and past events at Knowledge Valley — open days, science fairs, book fairs, tournaments and celebrations.')
+@section('title', 'School Events — Knowledge Valley International School')
+@section('meta_description', 'Events at KVS — science fairs, graduations, celebrations and more. Explore the life of Knowledge Valley International School.')
 
 @section('content')
-
 @include('partials.page-hero', [
-    'eyebrow' => 'School Life',
-    'title'   => 'Events at KVS',
-    'lead'    => 'Open days, fairs, tournaments and celebrations — there is always something happening in the Valley.',
-    'crumbs'  => [['label' => 'School Life', 'url' => route('school-life')], ['label' => 'Events']],
+    'title' => 'School Events',
+    'subtitle' => 'Science fairs, graduations, celebrations and more — step inside the life of Knowledge Valley.',
+    'crumbs' => [['School Life', '/school-life'], ['Events', null]],
 ])
 
-{{-- Upcoming --}}
 <section class="py-16 sm:py-24 bg-ivory">
     <div class="container-site">
-        <div class="reveal">
-            <p class="eyebrow">Mark Your Calendar</p>
-            <h2 class="heading-serif text-3xl sm:text-4xl mt-3 gold-rule-left">Upcoming Events</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse ($events as $event)
+            <a href="{{ route('events.show', $event->slug) }}" class="reveal group bg-white rounded-sm shadow-md hover:shadow-xl border border-beige-200 overflow-hidden block transition-shadow">
+                <div class="relative overflow-hidden aspect-[4/3]">
+                    <img src="{{ $event->image ?: '/img/hero-campus.svg' }}" alt="{{ $event->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" width="1600" height="1000" loading="lazy">
+                    @if ($event->gallery && count($event->gallery))
+                    <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full bg-maroon-950/80 text-ivory">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                        {{ count($event->gallery) + 1 }}
+                    </span>
+                    @endif
+                </div>
+                <div class="p-5">
+                    <h2 class="font-display text-lg font-bold text-maroon-900 group-hover:text-maroon-700 transition-colors">{{ $event->title }}</h2>
+                    @if ($event->excerpt)<p class="mt-2 text-sm text-charcoal-600 leading-relaxed line-clamp-3">{{ $event->excerpt }}</p>@endif
+                    <span class="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-gold-700 group-hover:text-gold-800">Read more
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/></svg>
+                    </span>
+                </div>
+            </a>
+            @empty
+            <p class="text-charcoal-600 col-span-full text-center py-10">No events published yet.</p>
+            @endforelse
         </div>
-        @if ($upcoming->isEmpty())
-        <div class="mt-12 reveal bg-white border border-beige-200 rounded-sm p-12 text-center">
-            <p class="font-display text-xl text-maroon-900">No upcoming events right now</p>
-            <p class="mt-2 text-charcoal-600 text-sm">Check back soon — or follow our news for announcements.</p>
-            <a href="{{ route('news.index') }}" class="btn-maroon mt-6">Browse News</a>
-        </div>
-        @else
-        <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($upcoming as $event)
-                @include('partials.event-card', ['event' => $event])
-            @endforeach
-        </div>
-        @endif
     </div>
 </section>
 
-{{-- Past --}}
-@if ($past->isNotEmpty())
-<section class="py-16 sm:py-24 bg-beige-100">
-    <div class="container-site">
-        <div class="reveal">
-            <p class="eyebrow">Memories</p>
-            <h2 class="heading-serif text-3xl sm:text-4xl mt-3 gold-rule-left">Past Events</h2>
-        </div>
-        <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($past as $event)
-                @include('partials.event-card', ['event' => $event])
-            @endforeach
-        </div>
-        @if ($past->hasPages())
-        <div class="mt-10">{{ $past->links() }}</div>
-        @endif
-    </div>
-</section>
-@endif
-
+@include('partials.cta-band')
 @endsection
