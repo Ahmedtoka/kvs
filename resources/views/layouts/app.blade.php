@@ -71,7 +71,7 @@
 @include('partials.floats')
 
 
-{{-- Meta Pixel - full-funnel events (KVS) --}}
+{{-- Meta Pixel - standard events only (Meta-policy friendly) --}}
 @if ($metaPixel)
 <script>
 (function () {
@@ -94,56 +94,18 @@
             else { name = (document.title || path).slice(0, 60); }
         }
         fbq('track', 'ViewContent', { content_name: name, content_category: 'page' });
-        if (path === '/book-a-tour') { fbq('track', 'Schedule', { content_name: 'Book a Tour page' }); }
-        if (path === '/admissions') { fbq('trackCustom', 'ViewAdmissions'); }
-        if (path === '/fees') { fbq('trackCustom', 'ViewFees'); }
+        if (path === '/book-a-tour') { fbq('track', 'Schedule', { content_name: 'Book a Tour' }); }
 
         document.addEventListener('click', function (e) {
             var a = e.target && e.target.closest ? e.target.closest('a, button') : null;
             if (!a) { return; }
             var href = (a.getAttribute('href') || '').toLowerCase();
-            var label = a.getAttribute('data-track') || a.getAttribute('data-label') || (a.textContent || '').trim().slice(0, 40);
-            if (href.indexOf('wa.me') > -1 || href.indexOf('whatsapp') > -1) {
-                fbq('track', 'Contact', { method: 'whatsapp', label: label });
-            } else if (href.indexOf('tel:') === 0) {
-                fbq('track', 'Contact', { method: 'phone', label: label });
-            } else if (href.indexOf('mailto:') === 0) {
-                fbq('track', 'Contact', { method: 'email', label: label });
-            } else if (href.indexOf('book-a-tour') > -1 || /book a tour/i.test(label)) {
-                fbq('track', 'Schedule', { content_name: label });
-            } else if (href.indexOf('/admissions') > -1) {
-                fbq('trackCustom', 'AdmissionsClick', { label: label });
-            } else if (a.hasAttribute('data-track')) {
-                fbq('trackCustom', 'CTAClick', { label: label });
+            if (href.indexOf('wa.me') > -1 || href.indexOf('whatsapp') > -1 || href.indexOf('tel:') === 0) {
+                fbq('track', 'Contact');
+            } else if (href.indexOf('book-a-tour') > -1) {
+                fbq('track', 'Schedule', { content_name: 'Book a Tour' });
             }
         }, true);
-
-        document.addEventListener('submit', function (e) {
-            var f = e.target;
-            if (!f || f.tagName !== 'FORM') { return; }
-            var action = (f.getAttribute('action') || '').toLowerCase();
-            if (action.indexOf('/leads') > -1) {
-                fbq('trackCustom', 'FormSubmit', { form: 'Lead / Enquiry' });
-            } else if (action.indexOf('/careers') > -1) {
-                fbq('trackCustom', 'FormSubmit', { form: 'Career Application' });
-            }
-        }, true);
-
-        try {
-            var seen = {};
-            var secs = document.querySelectorAll('main section[id]');
-            if (secs.length && 'IntersectionObserver' in window) {
-                var io = new IntersectionObserver(function (entries) {
-                    entries.forEach(function (en) {
-                        if (en.isIntersecting && en.target.id && !seen[en.target.id]) {
-                            seen[en.target.id] = 1;
-                            fbq('trackCustom', 'ViewSection', { section: en.target.id });
-                        }
-                    });
-                }, { threshold: 0.4 });
-                secs.forEach(function (s) { io.observe(s); });
-            }
-        } catch (err) {}
     }
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', boot);
