@@ -77,8 +77,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="t_date" class="block text-sm font-medium mb-1.5">Preferred Tour Date <span class="text-maroon-600" aria-hidden="true">*</span></label>
-                        <input type="text" id="t_date" name="preferred_date" placeholder="Select a date" autocomplete="off" value="{{ old('preferred_date') }}" min="{{ date('Y-m-d') }}" required class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
+                        <label for="t_date" class="block text-sm font-medium mb-1.5">Preferred Tour Date <span class="text-charcoal-600/60 font-normal">(optional)</span></label>
+                        <input type="text" id="t_date" name="preferred_date" placeholder="Select a date (optional)" autocomplete="off" value="{{ old('preferred_date') }}" min="{{ date('Y-m-d') }}" class="w-full h-12 px-4 rounded-sm border border-beige-300 bg-white focus:border-gold-600 focus:ring-2 focus:ring-gold-500/30 focus:outline-none transition-colors">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="t_notes" class="block text-sm font-medium mb-1.5">Anything we should know? <span class="text-charcoal-600/60 font-normal">(optional)</span></label>

@@ -35,7 +35,6 @@ class LeadController extends Controller
         if ($type === 'tour') {
             $rules['student_name'][0] = 'required';
             $rules['year_group'][0] = 'required';
-            $rules['preferred_date'][0] = 'required';
             $rules['preferred_date'][] = function ($attribute, $value, $fail) {
                 if ($value && in_array(\Illuminate\Support\Carbon::parse($value)->dayOfWeek, [5, 6], true)) {
                     $fail('Tours are not available on Fridays or Saturdays. Please choose another day.');
