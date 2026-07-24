@@ -69,6 +69,17 @@ class LeadController extends Controller
             'content_category' => 'lead',
         ]);
 
+        // A tour booking is also a genuine "Schedule" (appointment booked).
+        if ($type === 'tour') {
+            MetaConversions::send($request, 'Schedule', $eventId . '-s', [
+                'email'            => $data['email'] ?? null,
+                'phone'            => $data['phone'] ?? null,
+                'name'             => $data['parent_name'] ?? null,
+                'content_name'     => 'Book a Tour',
+                'content_category' => 'tour',
+            ]);
+        }
+
         return redirect()->route('thank-you', ['type' => $type])
             ->with('just_converted', true)
             ->with('meta_event_id', $eventId);

@@ -15,7 +15,7 @@
     @php
         $ga4 = setting('ga4_id');
         $gAds = setting('google_ads_id');
-        $metaPixel = setting('meta_pixel_id') ?: config('services.meta.pixel_id') ?: '869891722809793';
+        $metaPixel = setting('meta_pixel_id') ?: config('services.meta.pixel_id') ?: '1886023012802497';
         $tiktokPixel = setting('tiktok_pixel_id');
     @endphp
 
@@ -94,7 +94,6 @@
             else { name = (document.title || path).slice(0, 60); }
         }
         fbq('track', 'ViewContent', { content_name: name, content_category: 'page' });
-        if (path === '/book-a-tour') { fbq('track', 'Schedule', { content_name: 'Book a Tour' }); }
 
         document.addEventListener('click', function (e) {
             var a = e.target && e.target.closest ? e.target.closest('a, button') : null;
@@ -102,8 +101,6 @@
             var href = (a.getAttribute('href') || '').toLowerCase();
             if (href.indexOf('wa.me') > -1 || href.indexOf('whatsapp') > -1 || href.indexOf('tel:') === 0) {
                 fbq('track', 'Contact');
-            } else if (href.indexOf('book-a-tour') > -1) {
-                fbq('track', 'Schedule', { content_name: 'Book a Tour' });
             }
         }, true);
     }

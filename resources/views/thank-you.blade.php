@@ -50,7 +50,14 @@
         var eid = @json(session('meta_event_id'));
 
         // Meta (Facebook / Instagram) Pixel
-        try { if (window.fbq) { fbq('track', 'Lead', { content_name: name, content_category: type }, eid ? { eventID: eid } : undefined); } } catch (e) {}
+        try {
+            if (window.fbq) {
+                fbq('track', 'Lead', { content_name: name, content_category: type }, eid ? { eventID: eid } : undefined);
+                if (type === 'tour') {
+                    fbq('track', 'Schedule', { content_name: 'Book a Tour', content_category: 'tour' }, eid ? { eventID: eid + '-s' } : undefined);
+                }
+            }
+        } catch (e) {}
 
         // TikTok Pixel
         try { if (window.ttq) { ttq.track('SubmitForm', { content_name: name, content_type: type }); } } catch (e) {}
