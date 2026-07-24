@@ -7,99 +7,335 @@ use App\Models\Lead;
 use App\Models\TrackingEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AnalyticsController extends Controller
 {
-    public function index(): View
+    /** Advanced analytics dashboard with a date-range filter (defaults to today). */
+    public function index(Request $request): View
     {
-        $today = now()->startOfDay();
-        $week = now()->subDays(7);
-        $month = now()->subDays(30);
+        [$from, $to, $rangeKey, $prevFrom, $prevTo] = $this->resolveRange($request);
+        $cur  = [$from, $to];
+        $prev = [$prevFrom, $prevTo];
 
-        // ---- Headline cards ----
+        // ---- Core metrics (current + previous period for deltas) ----
+        $visitors      = $this->uniqueVisitors($cur);
+        $visitorsPrev  = $this->uniqueVisitors($prev);
+        $visits        = $this->visits($cur);
+        $visitsPrev    = $this->visits($prev);
+        $pageviews     = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $cur)->count();
+        $pageviewsPrev = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $prev)->count();
+        $leads         = Lead::whereBetween('created_at', $cur)->count();
+        $leadsPrev     = Lead::whereBetween('created_at', $prev)->count();
+
+        $ppv     = $visits > 0 ? round($pageviews / $visits, 1) : 0.0;
+        $ppvPrev = $visitsPrev > 0 ? round($pageviewsPrev / $visitsPrev, 1) : 0.0;
+        $conv     = $visitors > 0 ? round($leads / $visitors * 100, 1) : 0.0;
+        $convPrev = $visitorsPrev > 0 ? round($leadsPrev / $visitorsPrev * 100, 1) : 0.0;
+
         $cards = [
-            'visitors_today' => TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $today)->distinct('visitor_id')->count('visitor_id'),
-            'visitors_7d'    => TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $week)->distinct('visitor_id')->count('visitor_id'),
-            'pageviews_7d'   => TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $week)->count(),
-            'leads_7d'       => Lead::where('created_at', '>=', $week)->count(),
+            ['key' => 'visitors',  'label' => 'Unique Visitors', 'value' => number_format($visitors),  'delta' => $this->delta($visitors, $visitorsPrev),   'hint' => 'Distinct devices'],
+            ['key' => 'visits',    'label' => 'Visits',          'value' => number_format($visits),    'delta' => $this->delta($visits, $visitsPrev),       'hint' => 'Browsing sessions'],
+            ['key' => 'pageviews', 'label' => 'Page Views',      'value' => number_format($pageviews), 'delta' => $this->delta($pageviews, $pageviewsPrev), 'hint' => 'Pages opened'],
+            ['key' => 'ppv',       'label' => 'Pages / Visit',   'value' => number_format($ppv, 1),    'delta' => $this->delta($ppv, $ppvPrev),             'hint' => 'Depth of interest'],
+            ['key' => 'leads',     'label' => 'Leads',           'value' => number_format($leads),     'delta' => $this->delta($leads, $leadsPrev),         'hint' => 'Form submissions'],
+            ['key' => 'conv',      'label' => 'Conversion Rate', 'value' => $conv . '%',               'delta' => $this->delta($conv, $convPrev),           'hint' => 'Leads / visitors'],
         ];
 
-        // ---- Funnel (last 30 days, unique visitors per step) ----
-        $step1 = TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $month)
-            ->distinct('visitor_id')->count('visitor_id');
+        $trend       = $this->trend($from, $to);
+        $sources     = $this->sources($cur);
+        $devices     = $this->devices($cur);
+        $topPages    = $this->topPages($cur);
+        $entryPages  = $this->entryPages($cur);
+        $interactions = TrackingEvent::select('event', 'label', DB::raw('COUNT(*) as total'))
+            ->whereBetween('created_at', $cur)
+            ->whereIn('event', ['cta_click', 'see_all_click', 'whatsapp_click', 'call_click', 'nav_click'])
+            ->groupBy('event', 'label')->orderByDesc('total')->limit(12)->get();
+        $funnel      = $this->funnel($cur);
+        $engagement  = $this->engagement($cur, $from, $visitors);
+        $live        = $this->liveData();
 
-        $step2 = TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $month)
+        return view('admin.analytics', compact(
+            'cards', 'trend', 'sources', 'devices', 'topPages', 'entryPages',
+            'interactions', 'funnel', 'engagement', 'live', 'from', 'to', 'rangeKey'
+        ));
+    }
+
+    /* ===================== Metric helpers ===================== */
+
+    /** @return array{0:Carbon,1:Carbon,2:string,3:Carbon,4:Carbon} */
+    private function resolveRange(Request $request): array
+    {
+        $key = (string) $request->input('range', 'today');
+        $now = now();
+
+        switch ($key) {
+            case 'yesterday':
+                $from = $now->copy()->subDay()->startOfDay();
+                $to   = $now->copy()->subDay()->endOfDay();
+                break;
+            case '7d':
+                $from = $now->copy()->subDays(6)->startOfDay();
+                $to   = $now->copy()->endOfDay();
+                break;
+            case '30d':
+                $from = $now->copy()->subDays(29)->startOfDay();
+                $to   = $now->copy()->endOfDay();
+                break;
+            case 'custom':
+                $from = $request->filled('from') ? Carbon::parse($request->input('from'))->startOfDay() : $now->copy()->startOfDay();
+                $to   = $request->filled('to') ? Carbon::parse($request->input('to'))->endOfDay() : $now->copy()->endOfDay();
+                if ($from->gt($to)) {
+                    [$from, $to] = [$to->copy()->startOfDay(), $from->copy()->endOfDay()];
+                }
+                break;
+            case 'today':
+            default:
+                $key  = 'today';
+                $from = $now->copy()->startOfDay();
+                $to   = $now->copy()->endOfDay();
+                break;
+        }
+
+        // Previous comparable window (same length, immediately before).
+        $lengthSec = $to->getTimestamp() - $from->getTimestamp();
+        $prevTo    = $from->copy()->subSecond();
+        $prevFrom  = $prevTo->copy()->subSeconds($lengthSec);
+
+        return [$from, $to, $key, $prevFrom, $prevTo];
+    }
+
+    private function uniqueVisitors(array $between): int
+    {
+        return TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $between)
+            ->distinct('visitor_id')->count('visitor_id');
+    }
+
+    /** A "visit" = a browsing session. Falls back to unique visitors if sessions are absent. */
+    private function visits(array $between): int
+    {
+        $sessions = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $between)
+            ->whereNotNull('session_id')->distinct('session_id')->count('session_id');
+
+        return $sessions > 0 ? $sessions : $this->uniqueVisitors($between);
+    }
+
+    /** @return array{dir:string,pct:?int,new:bool} */
+    private function delta($cur, $prev): array
+    {
+        $cur = (float) $cur;
+        $prev = (float) $prev;
+        if ($prev <= 0) {
+            return ['dir' => $cur > 0 ? 'up' : 'flat', 'pct' => null, 'new' => $cur > 0];
+        }
+        $change = (int) round(($cur - $prev) / $prev * 100);
+
+        return ['dir' => $change > 0 ? 'up' : ($change < 0 ? 'down' : 'flat'), 'pct' => abs($change), 'new' => false];
+    }
+
+    private function trend(Carbon $from, Carbon $to): array
+    {
+        $hourly = $from->diffInHours($to) <= 26;
+
+        if ($hourly) {
+            $rows = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', [$from, $to])
+                ->selectRaw('HOUR(created_at) as slot, COUNT(DISTINCT visitor_id) as visitors, COUNT(*) as pageviews')
+                ->groupBy('slot')->get()->keyBy('slot');
+
+            return collect(range(0, 23))->map(fn ($h) => [
+                'label'     => sprintf('%02d:00', $h),
+                'visitors'  => (int) ($rows[$h]->visitors ?? 0),
+                'pageviews' => (int) ($rows[$h]->pageviews ?? 0),
+            ])->all();
+        }
+
+        $rows = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', [$from, $to])
+            ->selectRaw('DATE(created_at) as slot, COUNT(DISTINCT visitor_id) as visitors, COUNT(*) as pageviews')
+            ->groupBy('slot')->get()->keyBy('slot');
+
+        $out = [];
+        $cursor = $from->copy()->startOfDay();
+        $endDay = $to->copy()->startOfDay();
+        $guard = 0;
+        while ($cursor->lte($endDay) && $guard < 400) {
+            $key = $cursor->toDateString();
+            $out[] = [
+                'label'     => $cursor->format('d M'),
+                'visitors'  => (int) ($rows[$key]->visitors ?? 0),
+                'pageviews' => (int) ($rows[$key]->pageviews ?? 0),
+            ];
+            $cursor->addDay();
+            $guard++;
+        }
+
+        return $out;
+    }
+
+    /** First-touch traffic sources, classified into channels (internal navigation excluded). */
+    private function sources(array $between): Collection
+    {
+        $firstSub = DB::table('tracking_events')
+            ->select('visitor_id', DB::raw('MIN(id) as edge_id'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->groupBy('visitor_id');
+
+        $rows = DB::table('tracking_events as e')
+            ->joinSub($firstSub, 'f', fn ($j) => $j->on('e.id', '=', 'f.edge_id'))
+            ->select('e.referrer', 'e.utm_source')
+            ->get();
+
+        $host = request()->getHost();
+        $tally = [];
+        foreach ($rows as $r) {
+            $channel = $this->classifyChannel($r->referrer, $r->utm_source, $host);
+            if ($channel === 'Internal') {
+                continue;
+            }
+            $tally[$channel] = ($tally[$channel] ?? 0) + 1;
+        }
+        arsort($tally);
+
+        return collect($tally)->map(fn ($v, $k) => ['source' => $k, 'visitors' => $v])->values();
+    }
+
+    private function classifyChannel(?string $ref, ?string $utm, string $host): string
+    {
+        $utm = trim((string) $utm);
+        if ($utm !== '') {
+            return ucfirst(strtolower($utm)); // paid / campaign (e.g. facebook, google, tiktok)
+        }
+        $ref = trim((string) $ref);
+        if ($ref === '') {
+            return 'Direct';
+        }
+        $h = strtolower((string) parse_url($ref, PHP_URL_HOST));
+        $h = (string) preg_replace('/^www\./', '', $h);
+        if ($h === '') {
+            return 'Direct';
+        }
+        if ($h === strtolower($host)) {
+            return 'Internal';
+        }
+        if (preg_match('/(google|bing|yahoo|duckduckgo|ecosia|yandex)\./', $h)) {
+            return 'Organic Search';
+        }
+        if (preg_match('/facebook|fb\.|instagram|t\.co|twitter|x\.com|tiktok|youtube|youtu\.be|linkedin|wa\.me|whatsapp|t\.me|telegram|pinterest/', $h)) {
+            return 'Social';
+        }
+
+        return 'Referral';
+    }
+
+    private function devices(array $between): Collection
+    {
+        $rows = DB::table('tracking_events')
+            ->select('device', DB::raw('COUNT(DISTINCT visitor_id) as v'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)->whereNotNull('device')
+            ->groupBy('device')->pluck('v', 'device');
+
+        return collect(['mobile', 'desktop', 'tablet'])
+            ->map(fn ($d) => ['device' => $d, 'visitors' => (int) ($rows[$d] ?? 0)])
+            ->filter(fn ($r) => $r['visitors'] > 0)->values();
+    }
+
+    private function topPages(array $between): Collection
+    {
+        return TrackingEvent::select('page', DB::raw('COUNT(*) as views'), DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->groupBy('page')->orderByDesc('views')->limit(10)->get();
+    }
+
+    private function entryPages(array $between): Collection
+    {
+        $firstSub = DB::table('tracking_events')
+            ->select('visitor_id', DB::raw('MIN(id) as edge_id'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->groupBy('visitor_id');
+
+        return DB::table('tracking_events as e')
+            ->joinSub($firstSub, 'f', fn ($j) => $j->on('e.id', '=', 'f.edge_id'))
+            ->select('e.page', DB::raw('COUNT(*) as total'))
+            ->groupBy('e.page')->orderByDesc('total')->limit(8)->get();
+    }
+
+    private function funnel(array $between): array
+    {
+        $step1 = $this->uniqueVisitors($between);
+        $step2 = TrackingEvent::where('event', 'pageview')->whereBetween('created_at', $between)
             ->where(fn ($q) => $q->where('page', 'like', '/academics%')
                 ->orWhere('page', 'like', '/admissions%')
                 ->orWhere('page', 'like', '/school-life%')
-                ->orWhere('page', 'like', '/events%'))
+                ->orWhere('page', 'like', '/events%')
+                ->orWhere('page', 'like', '/fees%'))
+            ->distinct('visitor_id')->count('visitor_id');
+        $step3 = TrackingEvent::where('event', 'form_view')->whereBetween('created_at', $between)
+            ->distinct('visitor_id')->count('visitor_id');
+        $step4 = TrackingEvent::whereIn('event', ['form_submit', 'conversion'])->whereBetween('created_at', $between)
             ->distinct('visitor_id')->count('visitor_id');
 
-        $step3 = TrackingEvent::whereIn('event', ['form_view'])->where('created_at', '>=', $month)
-            ->distinct('visitor_id')->count('visitor_id');
-
-        $step4 = TrackingEvent::where('event', 'form_submit')->where('created_at', '>=', $month)
-            ->distinct('visitor_id')->count('visitor_id');
-
-        $leadsMonth = Lead::where('created_at', '>=', $month)->count();
-
-        $funnel = [
-            ['label' => 'Visited the website',            'count' => $step1],
-            ['label' => 'Explored academics / admissions', 'count' => $step2],
-            ['label' => 'Viewed the booking form',         'count' => $step3],
-            ['label' => 'Submitted a request',             'count' => max($step4, min($leadsMonth, $step1))],
+        return [
+            'max'   => max(1, $step1),
+            'steps' => [
+                ['label' => 'Visited the site',        'count' => $step1],
+                ['label' => 'Explored key pages',      'count' => $step2],
+                ['label' => 'Viewed the booking form', 'count' => $step3],
+                ['label' => 'Submitted a request',     'count' => $step4],
+            ],
         ];
-        $funnelMax = max(1, $step1);
-
-        // ---- Top pages (30d) ----
-        $topPages = TrackingEvent::select('page', DB::raw('COUNT(*) as views'), DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
-            ->where('event', 'pageview')->where('created_at', '>=', $month)
-            ->groupBy('page')->orderByDesc('views')->limit(12)->get();
-
-        // ---- Top interactions (30d) ----
-        $interactions = TrackingEvent::select('event', 'label', DB::raw('COUNT(*) as total'))
-            ->where('created_at', '>=', $month)
-            ->whereIn('event', ['cta_click', 'see_all_click', 'whatsapp_click', 'call_click', 'nav_click'])
-            ->groupBy('event', 'label')->orderByDesc('total')->limit(12)->get();
-
-        // ---- Daily unique visitors, last 14 days ----
-        $daily = TrackingEvent::select(DB::raw('DATE(created_at) as day'), DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
-            ->where('event', 'pageview')->where('created_at', '>=', now()->subDays(13)->startOfDay())
-            ->groupBy('day')->orderBy('day')->get()->keyBy('day');
-
-        $days = collect(range(13, 0))->map(function ($i) use ($daily) {
-            $key = now()->subDays($i)->toDateString();
-            return [
-                'date'     => now()->subDays($i)->format('d M'),
-                'visitors' => (int) ($daily[$key]->visitors ?? 0),
-            ];
-        });
-        $dailyMax = max(1, $days->max('visitors'));
-
-        // ---- Traffic sources (30d) ----
-        $sources = TrackingEvent::select(
-                DB::raw("COALESCE(NULLIF(utm_source, ''), CASE WHEN referrer IS NULL OR referrer = '' THEN 'Direct' ELSE 'Referral' END) as source"),
-                DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
-            ->where('event', 'pageview')->where('created_at', '>=', $month)
-            ->groupBy('source')->orderByDesc('visitors')->limit(8)->get();
-
-        // ---- Visitors by device (30d) ----
-        $devices = TrackingEvent::select('device', DB::raw('COUNT(DISTINCT visitor_id) as visitors'))
-            ->where('event', 'pageview')->where('created_at', '>=', $month)
-            ->whereNotNull('device')->groupBy('device')->orderByDesc('visitors')->get();
-
-        // ---- Live visitors (active in the last 5 minutes) ----
-        $live = $this->liveData();
-
-        return view('admin.analytics', compact('cards', 'funnel', 'funnelMax', 'topPages', 'interactions', 'days', 'dailyMax', 'sources', 'devices', 'live'));
     }
 
-    /**
-     * User-Flow report: where visitors enter, where they leave, the journeys
-     * they take, and which traffic sources / campaigns actually convert.
-     */
+    private function engagement(array $between, Carbon $from, int $visitors): array
+    {
+        // Bounce: sessions with a single pageview.
+        $sessionCounts = DB::table('tracking_events')
+            ->select('session_id', DB::raw('COUNT(*) as c'))
+            ->where('event', 'pageview')->whereBetween('created_at', $between)
+            ->whereNotNull('session_id')->groupBy('session_id');
+        $b = DB::query()->fromSub($sessionCounts, 's')
+            ->selectRaw('SUM(CASE WHEN c = 1 THEN 1 ELSE 0 END) as bounces, COUNT(*) as total')->first();
+        $bounceRate = ($b && $b->total > 0) ? (int) round($b->bounces / $b->total * 100) : 0;
+
+        // Deep scroll: visitors who reached 75% of a page.
+        $scrollers = TrackingEvent::where('event', 'scroll_75')->whereBetween('created_at', $between)
+            ->distinct('visitor_id')->count('visitor_id');
+        $scrollRate = $visitors > 0 ? (int) round($scrollers / $visitors * 100) : 0;
+
+        // New vs returning (first-ever pageview inside this window = new).
+        $newVisitors = DB::query()->fromSub(
+            DB::table('tracking_events')->select('visitor_id')
+                ->where('event', 'pageview')->groupBy('visitor_id')
+                ->havingRaw('MIN(created_at) >= ?', [$from]),
+            'n'
+        )->count();
+        $newVisitors = min($newVisitors, $visitors);
+        $returning = max(0, $visitors - $newVisitors);
+        $returningRate = $visitors > 0 ? (int) round($returning / $visitors * 100) : 0;
+
+        // Blended interest score (0-100): scroll depth + engaged (non-bounce) + loyalty.
+        $score = (int) round(min(100, ($scrollRate * 0.4) + ((100 - $bounceRate) * 0.4) + (min(100, $returningRate) * 0.2)));
+        if ($score >= 66) {
+            $verdict = 'High interest';
+        } elseif ($score >= 40) {
+            $verdict = 'Moderate interest';
+        } else {
+            $verdict = 'Low interest';
+        }
+
+        return [
+            'bounce_rate'    => $bounceRate,
+            'scroll_rate'    => $scrollRate,
+            'returning'      => $returning,
+            'returning_rate' => $returningRate,
+            'new_visitors'   => $newVisitors,
+            'score'          => $score,
+            'verdict'        => $verdict,
+        ];
+    }
+
+    /* ===================== User-Flow report (unchanged) ===================== */
+
     public function flow(Request $request): View
     {
         $from = $request->filled('from')

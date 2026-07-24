@@ -12,6 +12,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $now        = now();
+        $todayStart = $now->copy()->startOfDay();
+        $weekStart  = $now->copy()->subDays(6)->startOfDay();
+        $prevWeekS  = $now->copy()->subDays(13)->startOfDay();
+        $prevWeekE  = $now->copy()->subDays(7)->endOfDay();
+
         $stats = [
             'total'     => Lead::count(),
             'new'       => Lead::where('status', 'new')->count(),
@@ -24,6 +30,24 @@ class DashboardController extends Controller
         $byStatus = Lead::selectRaw('status, count(*) as c')->groupBy('status')->pluck('c', 'status');
         $recent = Lead::latest()->limit(10)->get();
 
+        // ---- Snapshot numbers (visitors already exclude bots going forward) ----
+        $extra = [
+            'visitors_today' => TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $todayStart)->distinct('visitor_id')->count('visitor_id'),
+            'visitors_7d'    => TrackingEvent::where('event', 'pageview')->where('created_at', '>=', $weekStart)->distinct('visitor_id')->count('visitor_id'),
+            'leads_today'    => Lead::where('created_at', '>=', $todayStart)->count(),
+            'leads_week'     => Lead::where('created_at', '>=', $weekStart)->count(),
+            'leads_week_prev' => Lead::whereBetween('created_at', [$prevWeekS, $prevWeekE])->count(),
+        ];
+
+        // ---- 14-day leads trend ----
+        $leadRows = Lead::selectRaw('DATE(created_at) as d, COUNT(*) as c')
+            ->where('created_at', '>=', $now->copy()->subDays(13)->startOfDay())
+            ->groupBy('d')->pluck('c', 'd');
+        $leadTrend = collect(range(13, 0))->map(function ($i) use ($leadRows, $now) {
+            $key = $now->copy()->subDays($i)->toDateString();
+            return ['label' => $now->copy()->subDays($i)->format('d M'), 'count' => (int) ($leadRows[$key] ?? 0)];
+        })->all();
+
         // Live visitors (active in the last 5 minutes)
         $liveWindow = now()->subMinutes(5);
         $live = [
@@ -33,6 +57,6 @@ class DashboardController extends Controller
                 ->groupBy('page')->orderByDesc('visitors')->limit(8)->get(),
         ];
 
-        return view('admin.dashboard', compact('stats', 'byStatus', 'recent', 'live'));
+        return view('admin.dashboard', compact('stats', 'byStatus', 'recent', 'live', 'extra', 'leadTrend'));
     }
 }

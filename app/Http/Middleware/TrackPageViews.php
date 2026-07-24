@@ -11,12 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Records a server-side "pageview" for every public GET page and ensures
- * every visitor carries an anonymous visitor_id cookie (1 year).
+ * every real visitor carries an anonymous visitor_id cookie (1 year).
+ *
+ * Bot / crawler / link-preview traffic is skipped entirely so it never
+ * pollutes the visitor analytics.
  */
 class TrackPageViews
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $isBot = TrackingEvent::isBot($request->userAgent());
+
         $visitorId = $request->cookie('kvs_vid');
         $isNew = false;
 
@@ -30,7 +35,8 @@ class TrackPageViews
 
         $response = $next($request);
 
-        if ($isNew) {
+        // Never hand a cookie to a bot — that would only help it look human next time.
+        if ($isNew && ! $isBot) {
             $response->headers->setCookie(
                 Cookie::create('kvs_vid', $visitorId)
                     ->withExpires(now()->addYear())
@@ -41,7 +47,7 @@ class TrackPageViews
             );
         }
 
-        if ($this->shouldTrack($request, $response)) {
+        if (! $isBot && $this->shouldTrack($request, $response)) {
             try {
                 TrackingEvent::create([
                     'visitor_id'   => $visitorId,

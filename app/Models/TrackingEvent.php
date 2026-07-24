@@ -46,4 +46,37 @@ class TrackingEvent extends Model
 
         return 'desktop';
     }
+
+    /**
+     * Is this User-Agent a bot / crawler / link-preview fetcher / uptime monitor?
+     *
+     * These must NOT be counted as real visitors — otherwise every Google,
+     * Facebook, WhatsApp-preview or crawler hit inflates the visitor numbers
+     * (bots don't keep cookies, so each hit looks like a brand-new visitor).
+     */
+    public static function isBot(?string $ua): bool
+    {
+        $ua = trim((string) $ua);
+
+        // Empty or absurdly short UA strings are almost always automated.
+        if ($ua === '' || strlen($ua) < 12) {
+            return true;
+        }
+
+        return (bool) preg_match(
+            '/bot\b|crawl|spider|slurp|mediapartners|facebookexternalhit|facebookcatalog|'
+            . 'whatsapp|telegram|telegrambot|slackbot|discordbot|twitterbot|linkedinbot|'
+            . 'pinterest|redditbot|embedly|quora|vkshare|w3c_validator|'
+            . 'googlebot|bingbot|yandex|baidu|duckduckbot|applebot|petalbot|sogou|exabot|'
+            . 'ahrefs|semrush|mj12bot|dotbot|dataforseo|screaming ?frog|serpstat|'
+            . 'gptbot|claudebot|claude-web|anthropic|ccbot|chatgpt|oai-searchbot|perplexitybot|'
+            . 'bytespider|amazonbot|meta-externalagent|google-inspectiontool|'
+            . 'headlesschrome|phantomjs|puppeteer|playwright|selenium|'
+            . 'python-requests|python-urllib|aiohttp|httpx|go-http-client|okhttp|java\/|libwww|'
+            . 'curl\/|wget\/|node-fetch|axios\/|guzzle|apache-httpclient|'
+            . 'uptimerobot|pingdom|statuscake|site24x7|newrelic|datadog|monitor|'
+            . 'lighthouse|gtmetrix|pagespeed|checkly|prerender/i',
+            $ua
+        );
+    }
 }

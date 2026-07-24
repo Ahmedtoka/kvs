@@ -14,6 +14,11 @@ class TrackController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // Ignore automated agents so behaviour events stay human-only.
+        if (TrackingEvent::isBot($request->userAgent())) {
+            return response()->json(['ok' => true]);
+        }
+
         $validated = $request->validate([
             'event' => ['required', 'string', 'in:' . implode(',', TrackingEvent::CLIENT_EVENTS)],
             'page'  => ['required', 'string', 'max:191'],
